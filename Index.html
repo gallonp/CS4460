@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script src="http://d3js.org/d3.v3.js"></script>
+</head>
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+.list-group-item {
+position: relative;
+display: block;
+padding: 10px 15px;
+margin-bottom: -1px;
+background-color: #fff;
+border: 1px solid #ddd;
+}
+.list-group {
+max-width: 400px;
+height: auto;
+max-height: 258px;
+overflow-x: hidden;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+
+.horizontalGrid  {
+    stroke: lightgrey;
+    opacity: 0.3;
+}
+.VerticalGrid  {
+    stroke: lightgrey;
+    opacity: 0.3;
+}
+
+.animate-if {
+background:white;
+border:1px solid black;
+padding:10px;
+}
+
+.animate-if.ng-enter, .animate-if.ng-leave {
+-webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.animate-if.ng-enter,
+.animate-if.ng-leave.ng-leave-active {
+opacity:0;
+}
+
+.animate-if.ng-leave,
+.animate-if.ng-enter.ng-enter-active {
+opacity:1;
+}
+</style>
+<body ng-app="ngAnimate">
+    <!-- <svg id='test'></svg> -->
+    <svg id='gpa'></svg>
+
+<!--     <div class="dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+    Dropdown
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" id="dropdown-menu-btn" role="menu" aria-labelledby="dropdownMenu1">
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+
+  </ul>
+
+</div> -->
+<div style="position:absolute;top:100px;left:700px;width:auto" ng-controller="courseSearchController">
+    <input type="text" id="searchBox" name="CourseName" style="width:100px" ng-init="show=false" placeholder="CoursesName"  ng-keypress="search()" ng-blur="addThis()" ng-model="query" ng-focus="checked=true">
+    <div class="list-group" ng-show="checked" style="position:absolute;width:100px;z-index:100;">
+      <a class="list-group-item" ng-repeat="course in courses | filter:query"  ng-mousedown="addThis(course);event.stopPropagation()" >
+         {{course}}
+      </a>
+
+    </div>
+    <div style="position:absolute;top:40px;width:auto;z-index:1;">
+      <div class="col-lg-6" style="padding-left:0px;">
+        <div ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
+          style="padding-top:3px">
+          <span class="input-group-btn">
+            <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
+          </span>
+           <span class="input-group-addon" style="background-color:white; color:black">{{course}}    </span>
+        </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+      </div>  
+
+</div>
+<script>
+
+angular.module('ngAnimate', [])
+    .controller('courseSearchController', ['$scope', function($scope) {
+        $scope.checked=false;
+        console.log(selectedCourses);
+        $scope.selectedCourses = selectedCourses;
+        $scope.search = function(){
+            $scope.checked=true
+        };
+        var allCourses = couserWholeSet.values();
+        allCourses.sort();
+        $scope.courses = allCourses;
+        $scope.addThis = function(course){
+          if(course==undefined){
+            console.log("onblur");
+            $scope.checked=false;
+            return
+          }
+          if (selectedCourses.indexOf(course)>-1){
+            $("#searchBox").val("");
+            return;
+          }
+
+          $("#searchBox").val("");
+          // console.log(course);
+          selectedCourses.push(course);
+          $scope.selectedCourses = selectedCourses;
+          courseData.forEach(function(d) {
+          if (selectedCourses.indexOf(d.Course)>-1){
+                    dataDics.push(d)
+                }
+          });
+          courseGPAArrays = selectedCourses.map(function(course) {
+          return {
+            name: course,
+            values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
+                  return {GPA: d.GPA, Year: +d.Year};
+              })
+              };
+          });
+
+
+          // console.log(courseGPAArrays);
+          var newCourse = svg.selectAll(".course")
+            .data(courseGPAArrays,function(d){return d.name}).enter().append("g")
+            .attr("class", "course");
+
+
+          newCourse.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) { return lines(d.values); })
+            .style("stroke", function(d) { 
+              return color(selectedCourses.indexOf(d.name)); });
+
+          newCourse.append("text")
+                .attr("transform", function(d) { 
+                  return "translate(" + width + "," + yy(d.values[d.values.length - 1].GPA) + ")"; })
+                .attr("x", 3)
+                .attr("dy", ".35em")
+                .text(function(d) { return d.name; });
+        }
+
+
+       $scope.deleteCourse = function(course){
+
+              selectedCourses.splice(selectedCourses.indexOf(course), 1);
+              $scope.selectedCourses = selectedCourses;
+              // console.log(courseGPAArrays);
+              courseGPAArrays = courseGPAArrays.filter(function(d){
+                return d.name != course
+              })
+              // console.log(courseGPAArrays)
+              var newCourse = svg.selectAll(".course")
+                .data(courseGPAArrays,function(d){return d.name});
+
+              newCourse.exit()
+                    .transition()
+                    .duration(500)
+                    .style("opacity","0")
+                    .remove();    
+
+          };
+
+    }]);
+
+
+
+var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = 700 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+
+
+
+var parseDate = d3.time.format("%Y%m%d").parse;
+
+var xx = d3.scale.linear()
+    .range([0, width]);
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+
+var yy = d3.scale.linear()
+    .range([height, 0]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var color = d3.scale.category20();
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var xAxiss = d3.svg.axis()
+    .scale(xx).ticks(20).tickFormat(d3.format("d"))
+    .orient("bottom");
+
+var yAxiss = d3.svg.axis()
+    .scale(yy)
+    .orient("left");
+
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.temperature); });
+
+var lines = d3.svg.line()
+    .interpolate("linear")
+    .x(function(d) { return xx(d.Year); })
+    .y(function(d) { return yy(d.GPA); });
+
+function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
+}
+ 
+var couserWholeSet;
+var selectedCourses = ["CS 1301", "CS 1331", "CS 2340","CS 1332", "CS 2110"];
+var courseGPAArrays;
+var dataDics;
+var courseData;
+var svg = d3.select('#gpa')
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.csv("output.csv", function(error,data){
+    // console.log(data)
+    courseData = data;
+    var couserSet =d3.set();
+    data.forEach(function(d) {
+        d.Year = parseInt(d.Year);
+        d.GPA = +d.GPA;
+        couserSet.add(d.Course)
+  });
+    couserWholeSet = couserSet
+
+
+    dataDics = [];
+    
+    var N = 20; 
+    var indexRange = Array.apply(null, {length: N}).map(Number.call, Number)
+    // console.log(indexRange)
+    
+    // color.domain(indexRange);
+
+    courseGPAArrays = selectedCourses.map(function(course) {
+      // console.log(course);
+    return { 
+      name: course,
+      values: data.filter(function(d) { return d.Course == course ; }).map(function(d) {
+            return {GPA: d.GPA, Year: +d.Year};
+        })
+        };
+    });
+
+    xx.domain(d3.extent(data, function(d) { return d.Year; }));
+    yy.domain([2.0,4.0]);
+
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxiss);
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxiss)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Average GPA");
+
+    var courseElement = svg.selectAll(".course")
+      .data(courseGPAArrays, function(d){return d.name})
+    .enter().append("g")
+      .attr("class", "course");
+
+    courseElement.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return lines(d.values); })
+      .style("stroke", function(d) { 
+        return color(selectedCourses.indexOf(d.name)); });
+
+    courseElement.append("text")
+          .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+          .attr("transform", function(d) { return "translate(" + xx(d.value.Year) + "," + yy(d.value.GPA) + ")"; })
+          .attr("x", 3)
+          .attr("dy", ".35em")
+          .text(function(d) { return d.name; });
+    
+
+    svg.selectAll("line.horizontalGrid").data(yy.ticks(5)).enter()
+    .append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "x1" : 0,
+            "x2" : width,
+            "y1" : function(d){ return yy(d);},
+            "y2" : function(d){ return yy(d);},
+
+        });
+
+    svg.selectAll("line.VerticalGrid").data(xx.ticks(20)).enter()
+    .append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "y1" : 0,
+            "y2" : height,
+            "x1" : function(d){return xx(d);},
+            "x2" : function(d){ return xx(d);},
+
+        });
+
+});
+
+</script>
+
+
+
+</body>
+
+
