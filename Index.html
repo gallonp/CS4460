@@ -98,9 +98,9 @@ opacity:1;
 
 </div> -->
 <div style="position:absolute;top:100px;left:700px;width:auto" ng-controller="courseSearchController">
-    <input type="text" id="searchBox" name="CourseName" style="width:100px" ng-init="show=false" placeholder="CoursesName"  ng-keypress="search()" ng-blur="addThis()" ng-model="query" ng-focus="checked=true">
+    <input type="text" id="searchBox" name="CourseName" style="width:100px" ng-init="show=false" placeholder="CoursesName"  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
     <div class="list-group" ng-show="checked" style="position:absolute;width:100px;z-index:100;">
-      <a class="list-group-item" ng-repeat="course in courses | filter:query"  ng-mousedown="addThis(course);event.stopPropagation()" >
+      <a class="list-group-item" ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
          {{course}}
       </a>
 
@@ -152,12 +152,13 @@ angular.module('ngAnimate', [])
 
 
         $scope.updateView = function(courseGPAArrays,selectedCourses){
-          var newCourse = svg.selectAll(".course")
+          var allCourses = svg.selectAll(".course")
             .data(courseGPAArrays,function(d){return d.name})
 
           //This is appending new paths and stlying them for new coursing
-          newCourse.enter().append("g")
-            .attr("class", "course").append("path")
+          var newCourse = allCourses.enter().append("g");
+
+          newCourse.attr("class", "course").append("path")
             .attr("class", "line")
             .attr("d", function(d) { return lines(d.values); })
             .style("stroke", function(d) { 
@@ -165,7 +166,8 @@ angular.module('ngAnimate', [])
             .style("stroke-width",function(d){
               return 2
             })
-            .append("text")
+
+          newCourse.append("text")
                 .attr("transform", function(d) { 
                   return "translate(" + width + "," + yy(d.values[d.values.length - 1].GPA) + ")"; })
                 .attr("x", 3)
@@ -173,14 +175,14 @@ angular.module('ngAnimate', [])
                 .text(function(d) { return d.name; });;
           
           //This is update section to change the style of all course paths
-          newCourse.style("opacity",function(d) {
+          allCourses.style("opacity",function(d) {
               if (!d.highlight) {
                return 0.3
               } else {
                 return 1
               }
             })
-          newCourse.selectAll("path").style("stroke-width",function(d){
+          allCourses.selectAll("path").style("stroke-width",function(d){
               if (!d.highlight) {
                return 1
               } else {
@@ -188,11 +190,10 @@ angular.module('ngAnimate', [])
               }
           })
           
-
-
           //This is exit section to remove deleted courses.
-          newCourse.exit()
-                    .transition()
+          var deletedCourse = allCourses.exit();
+
+          deletedCourse.transition()
                     .duration(500)
                     .style("opacity","0")
                     .remove();   
@@ -201,7 +202,7 @@ angular.module('ngAnimate', [])
         }
 
         //Add a course to selectedCourses and display them
-        $scope.addThis = function(course){
+        $scope.addCourse = function(course){
           if(course==undefined){
             $scope.checked=false;
             return
@@ -228,6 +229,7 @@ angular.module('ngAnimate', [])
             highlight:true
               };
           });
+
           $scope.updateView(courseGPAArrays,selectedCourses);
           
         }
