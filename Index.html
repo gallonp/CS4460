@@ -153,7 +153,7 @@ opacity:1;
     <div style="position:absolute;top:40px;width:auto;z-index:1;">
       <div class="col-lg-6" style="padding-left:0px;">
         <div ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
-          style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()">
+          style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()" ng-click="showDetail(course)">
           <span class="input-group-btn">
             <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
           </span>
@@ -197,7 +197,11 @@ angular.module('ngAnimate', [])
           })
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
         }
-
+        $scope.showDetail = function(course){
+          console.log(course);
+          currentDetailCourse = course;
+          "Tess, update your view here"
+        } 
 
         $scope.updateView = function(courseGPAArrays,selectedCourses){
           var allCourses = svg.selectAll(".course")
@@ -341,6 +345,8 @@ var courseGPAArrays;
 var dataDics;
 var courseData;
 
+"Tess, use this to change your graph accordingly"
+var currentDetailCourse
 //Select a tag named gpa and use the svg handler to put stuff on it
 var svg = d3.select('#gpa')
         .attr("width", width + margin.left + margin.right)
@@ -350,7 +356,7 @@ var svg = d3.select('#gpa')
 
 
 //Read data and draw stuff
-d3.csv("output.csv", function(error,data){
+d3.csv("output3.csv", function(error,data){
     // console.log(data)
     courseData = data;
     var couserSet =d3.set();
