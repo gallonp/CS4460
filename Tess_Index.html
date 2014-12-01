@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: orange;
+}
+
+.bar:hover {
+  fill: orangered ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+  text-align: center;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+</style>
+<body>
+<svg id='bySemester'></svg>
+<svg id='byGrade'></svg>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script>
+
+//pass in class name
+//filters1 is grade breakdown
+//filters2 is semester breakdown
+	
+var filters1 = {
+    'course': 'CS1301',
+	'semester': 'Spring',
+    'year': '2010' };
+	
+var filters2 = {
+	'course': 'CS1301',
+	//'semester': ['Spring', 'Fall', 'Summer'],
+	'year': '2010' };
+
+d3.csv("courseinfo2.csv", function(error, csv) {
+  csv = csv.filter(function(row) {
+	        return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
+	            return pass && (!filters1[column] || row[column] === filters1[column] || filters1[column].indexOf(row[column]) >= 0 );
+	        }, true);
+	    })
+		
+  var xaxis = ["A", "B", "C", "D", "F", "W"];
+  yaxis = csv.map(function(d) {
+	  return  [{ X:"A", Y:+d['A']/100, Z:+d['GPA']}, 
+	  		   { X:"B", Y:+d['B']/100, Z:+d['GPA']}, 
+	  		   { X:"C", Y:+d['C']/100, Z:+d['GPA']},
+	  	       { X:"D", Y:+d['D']/100, Z:+d['GPA']},
+	  	       { X:"F", Y:+d['F']/100, Z:+d['GPA']},
+	  	 	   { X:"W", Y:+d['W']/100, Z:+d['GPA']}];
+  })
+  yaxis = yaxis[0];	
+
+  var margin = {top: 40, right: 20, bottom: 30, left: 40},
+      width = 500 - margin.left - margin.right,
+      height = 270 - margin.top - margin.bottom;
+
+  var formatPercent = d3.format(".0%");
+
+  var x = d3.scale.ordinal()
+      .rangeRoundBands([0, width], .1);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+	  .tickFormat(formatPercent);
+  
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return "<strong>Percentage:</strong> <span style='color:red'>" + (d.Y*100).toFixed(1) + "%" + "</span>" + "</br>" +
+  	         "<strong>GPA:</strong> <span style='color:red'>" + d.Z.toFixed(2) + "</span>"; })
+
+  var svg = d3.select("#byGrade")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  
+  x.domain(xaxis);
+  y.domain([0 , d3.max(yaxis, function (d) {return d.Y + .15; })]);
+
+  svg.call(tip);
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Percent");
+
+  svg.selectAll(".bar")
+      .data(yaxis)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.X); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.Y); })
+      .attr("height", function(d) { return height - y(d.Y); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+});
+
+d3.csv("courseinfo2.csv", function(error, csv) {
+  csv = csv.filter(function(row) {
+	        return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
+	            return pass && (!filters2[column] || row[column] === filters2[column] || filters2[column].indexOf(row[column]) >= 0 );
+	        }, true);
+	    })
+		
+	var margin = {top: 40, right: 20, bottom: 30, left: 40},
+	    width = 500 - margin.left - margin.right,
+	    height = 270 - margin.top - margin.bottom
+	
+	var x = d3.scale.ordinal()
+	    .rangeRoundBands([0, width], .1);
+
+	var y = d3.scale.linear()
+	    .range([height, 0]);
+
+	var xAxis = d3.svg.axis()
+	    .scale(x)
+	    .orient("bottom");
+
+	var yAxis = d3.svg.axis()
+	    .scale(y)
+	    .orient("left")
+
+	var tip = d3.tip()
+	  .attr('class', 'd3-tip')
+	  .offset([-10, 0])
+	  .html(function(d) {
+	    return "<strong>GPA:</strong> <span style='color:red'>" + +d.GPA + "</span>"; })
+
+	var svg = d3.select("#bySemester")
+	    .attr("width", width + margin.left + margin.right)
+	    .attr("height", height + margin.top + margin.bottom)
+	  .append("g")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  x.domain(csv.map(function(d) { return d.semester; }));
+  y.domain([d3.min(csv, function(d) { return +d.GPA - .4; }) , d3.max(csv, function(d) { return +d.GPA + .15; })]);
+
+  svg.call(tip); 
+  
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("GPA");
+
+  svg.selectAll(".bar")
+      .data(csv)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.semester); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(+d.GPA); })
+      .attr("height", function(d) { return height - y(+d.GPA); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+});
+
+</script>
