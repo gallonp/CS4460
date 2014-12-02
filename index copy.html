@@ -167,6 +167,10 @@ opacity:1;
 	<svg id='bySemester'></svg>
 	<svg id='byGrade'></svg>
 <script>
+	
+var deleteCount = 0, addCount = 5;
+var colorsUsed = [0,1,2,3,4];
+var colorsNotUsed = [5,6,7,8,9];
 
 angular.module('ngAnimate', [])
     .controller('courseSearchController', ['$scope', function($scope) {
@@ -209,8 +213,11 @@ angular.module('ngAnimate', [])
           newCourse.attr("class", "course").append("path")
             .attr("class", "line")
             .attr("d", function(d) { return lines(d.values); })
-            .style("stroke", function(d) { 
-              return color(selectedCourses.indexOf(d.name)); })
+            .style("stroke", function(d) {
+     	  		colorsUsed[colorsUsed.length] = colorsNotUsed[0]
+  	     	    colorsNotUsed.splice(0,1);
+				return color[colorsUsed[colorsUsed.length-1]];
+				})
             .style("stroke-width",function(d){
               return 2
             })
@@ -259,7 +266,12 @@ angular.module('ngAnimate', [])
             $("#searchBox").val("");
             return;
           }
-
+		  
+		  if ((addCount - deleteCount) > 7) {
+			window.alert("The maximum number of allowed classes is 8");
+			return;
+		  }
+		  addCount += 1;
           $("#searchBox").val("");
           selectedCourses.push(course);
           $scope.selectedCourses = selectedCourses;
@@ -284,6 +296,8 @@ angular.module('ngAnimate', [])
 
 
        $scope.deleteCourse = function(course){
+   	  		  colorsNotUsed[colorsNotUsed.length] = colorsUsed[selectedCourses.indexOf(course)]
+	     	  colorsUsed.splice(selectedCourses.indexOf(course),1);
               selectedCourses.splice(selectedCourses.indexOf(course), 1);
               $scope.selectedCourses = selectedCourses;
               $scope.dehighlight();
@@ -292,6 +306,7 @@ angular.module('ngAnimate', [])
               })
 
               $scope.updateView(courseGPAArrays,selectedCourses);
+			  deleteCount += 1;
 
           };
 
@@ -314,7 +329,9 @@ var yy = d3.scale.linear()
     .range([height, 0]);
 
 
-var color = d3.scale.category10();
+//var color = d3.scale.category10();
+var color = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a"];
+
 
 var xAxis = d3.svg.axis()
     .scale(xx).ticks(20).tickFormat(d3.format("d"))
@@ -405,7 +422,7 @@ d3.csv("output3.csv", function(error,data){
       .attr("class", "line")
       .attr("d", function(d) { return lines(d.values); })
       .style("stroke", function(d) { 
-        return color(selectedCourses.indexOf(d.name)%20); })
+		  return color[selectedCourses.indexOf(d.name)%20]; })
       .style("stroke-width",2);
 
     courseElement.append("text")
