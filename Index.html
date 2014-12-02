@@ -14,7 +14,7 @@
 
 <!-- <script src="http://d3js.org/d3.v3.js"></script> -->
 <script src="D3/d3/d3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<!-- <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> -->
 </head>
 <style>
 
@@ -199,30 +199,10 @@ angular.module('ngAnimate', [])
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
         }
         $scope.showDetail = function(course){
-          
+          console.log(course);
           currentDetailCourse = course;
-          course = course.replace(/\s+/g, '');
-          var t =courseinfoEachSemester.filter(function(d){
-            return d.course == course;
-          });
-          if (t.length>0){
-            console.log(t.length)
-            filters1.course =  course;
-            filters2.course = course;
-            filters1.year =  t[0].year;
-            filters2.year =  t[0].year;
-            filters1.semester =  t[0].semester;
-            svg1.remove('g');
-            svg1 = d3.select("#byGrade").append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            drawFirst();
-            svg2.remove('g');
-            svg2 = d3.select("#bySemester").append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            drawSecond();
-          }
-        
-          // drawFirst();
+          filters1.course =  course;
+          filters2.course = course;
 
 // var filters1 = {
 //     'course': 'CS1301',
@@ -233,6 +213,7 @@ angular.module('ngAnimate', [])
 //   'course': 'CS1301',
 //   //'semester': ['Spring', 'Fall', 'Summer'],
 //   'year': '2009' };
+          "Tess, update your view here"
         } 
 
         $scope.updateView = function(courseGPAArrays,selectedCourses){
@@ -513,13 +494,14 @@ d3.csv("output3.csv", function(error,data){
 var filters1 = {
     'course': 'CS1301',
   'semester': 'Fall',
-    'year': '2009' };
+    'year': '2010' };
   
 var filters2 = {
   'course': 'CS1301',
   //'semester': ['Spring', 'Fall', 'Summer'],
   'year': '2009' };
   
+
 //Create svgs to place graphs in
     
 var svg1 = d3.select("#byGrade")
@@ -534,13 +516,11 @@ var svg2 = d3.select("#bySemester")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var courseinfoEachSemester;
+
 function drawFirst() {
 
 d3.csv("courseinfo2.csv", function(error, csv) {
-  courseinfoEachSemester = csv;
   csv = csv.filter(function(row) {
-          
           return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
               return pass && (!filters1[column] || row[column] === filters1[column] || filters1[column].indexOf(row[column]) >= 0 );
           }, true);
@@ -579,17 +559,17 @@ d3.csv("courseinfo2.csv", function(error, csv) {
       .orient("left")
     .tickFormat(formatPercent);
   
-  var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return "<strong>Percentage:</strong> <span style='color:red'>" + (d.Y*100).toFixed(1) + "%" + "</span>" + "</br>" +
-             "<strong>GPA:</strong> <span style='color:red'>" + d.Z.toFixed(2) + "</span>"; })
+  // var tip = d3.tip()
+  //   .attr('class', 'd3-tip')
+  //   .offset([-10, 0])
+  //   .html(function(d) {
+  //     return "<strong>Percentage:</strong> <span style='color:red'>" + (d.Y*100).toFixed(1) + "%" + "</span>" + "</br>" +
+  //            "<strong>GPA:</strong> <span style='color:red'>" + d.Z.toFixed(2) + "</span>"; })
   
   x.domain(xaxis);
   y.domain([0 , d3.max(yaxis, function (d) {return d.Y + .15; })]);
 
-  svg1.call(tip);
+  // svg1.call(tip);
 
   svg1.append("g")
       .attr("class", "x axis")
@@ -614,14 +594,13 @@ d3.csv("courseinfo2.csv", function(error, csv) {
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.Y); })
       .attr("height", function(d) { return height - y(d.Y); })
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide)
+      // .on('mouseover', tip.show)
+      // .on('mouseout', tip.hide)
 });
 };
 
 drawFirst();
 
-function drawSecond(){
 d3.csv("courseinfo2.csv", function(error, csv) {
   csv = csv.filter(function(row) {
           return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
@@ -647,16 +626,16 @@ d3.csv("courseinfo2.csv", function(error, csv) {
       .scale(y)
       .orient("left")
 
-  var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return "<strong>GPA:</strong> <span style='color:red'>" + +d.GPA + "</span>"; })
+  // var tip = d3.tip()
+  //   .attr('class', 'd3-tip')
+  //   .offset([-10, 0])
+  //   .html(function(d) {
+  //     return "<strong>GPA:</strong> <span style='color:red'>" + +d.GPA + "</span>"; })
 
   x.domain(csv.map(function(d) { return d.semester; }));
   y.domain([d3.min(csv, function(d) { return +d.GPA - .4; }) , d3.max(csv, function(d) { return +d.GPA + .15; })]);
 
-  svg2.call(tip); 
+  // svg2.call(tip); 
   
   svg2.append("g")
       .attr("class", "x axis")
@@ -681,11 +660,10 @@ d3.csv("courseinfo2.csv", function(error, csv) {
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(+d.GPA); })
       .attr("height", function(d) { return height - y(+d.GPA); })
-      .on('mouseout', tip.hide)
-      .on('mouseover', tip.show)
+      
+      // .on('mouseout', tip.hide)
+      // .on('mouseover', tip.show)
 });
-}
-drawSecond();
 
 </script>
 
