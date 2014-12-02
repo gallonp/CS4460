@@ -471,7 +471,7 @@ var svg2 = d3.select("#bySemester")
   .append("g")
 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("courseinfo2.csv", function(error, csv) {
+d3.csv("courseinfo3.csv", function(error, csv) {
   csv = csv.filter(function(row) {
           
 	        return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
@@ -551,7 +551,7 @@ d3.csv("courseinfo2.csv", function(error, csv) {
       .on('mouseout', tip.hide)
 });
 
-d3.csv("courseinfo2.csv", function(error, csv) {
+d3.csv("courseinfo3.csv", function(error, csv) {
   csv = csv.filter(function(row) {
 	        return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
 	            return pass && (!filters2[column] || row[column] === filters2[column] || filters2[column].indexOf(row[column]) >= 0 );
