@@ -350,7 +350,7 @@ var yy = d3.scale.linear()
     .range([height, 0]);
 
 
-var color = d3.scale.category20();
+var color = d3.scale.category10();
 
 var xAxis = d3.svg.axis()
     .scale(xx).ticks(20).tickFormat(d3.format("d"))
@@ -511,12 +511,12 @@ d3.csv("output3.csv", function(error,data){
 //filters2 is semester breakdown
   
 var filters1 = {
-    'course': 'CS1301',
+    'course': 'CS 1301',
   'semester': 'Fall',
     'year': '2009' };
   
 var filters2 = {
-  'course': 'CS1301',
+  'course': 'CS 1301',
   //'semester': ['Spring', 'Fall', 'Summer'],
   'year': '2009' };
   
@@ -537,7 +537,7 @@ var svg2 = d3.select("#bySemester")
 var courseinfoEachSemester;
 function drawFirst() {
 
-d3.csv("courseinfo2.csv", function(error, csv) {
+d3.csv("courseinfo3.csv", function(error, csv) {
   courseinfoEachSemester = csv;
   csv = csv.filter(function(row) {
           
@@ -622,7 +622,7 @@ d3.csv("courseinfo2.csv", function(error, csv) {
 drawFirst();
 
 function drawSecond(){
-d3.csv("courseinfo2.csv", function(error, csv) {
+d3.csv("courseinfo3.csv", function(error, csv) {
   csv = csv.filter(function(row) {
           return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
               return pass && (!filters2[column] || row[column] === filters2[column] || filters2[column].indexOf(row[column]) >= 0 );
