@@ -126,7 +126,7 @@ opacity:1;
   left: 0;
 }
 </style>
-<body ng-app="ngAnimate">
+<body ng-app="ngAnimate" ng-controller="courseSearchController">
     <!-- <svg id='test'></svg> -->
     <svg id='gpa'></svg>
   
@@ -142,7 +142,7 @@ opacity:1;
   </ul>
 
 </div> -->
-<div style="position:absolute;top:100px;left:700px;width:auto" ng-controller="courseSearchController">
+<div style="position:absolute;top:100px;left:700px;width:auto" >
     <input type="text" id="searchBox" name="CourseName" style="width:100px" ng-init="show=false" placeholder="CoursesName"  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
     <div class="list-group" ng-show="checked" style="position:absolute;width:100px;z-index:100;">
       <a class="list-group-item" ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
@@ -153,7 +153,7 @@ opacity:1;
     <div style="position:absolute;top:40px;width:auto;z-index:1;">
       <div class="col-lg-6" style="padding-left:0px;">
         <div ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
-          style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()" ng-click="showDetail(course)">
+          style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()" >
           <span class="input-group-btn">
             <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
           </span>
@@ -163,9 +163,12 @@ opacity:1;
       </div>  
 
 </div>
-
-  <svg id='bySemester'></svg>
-  <svg id='byGrade'></svg>
+<svg id='byGrade'>
+  <div><div>{{chart1Data}}</div></div>
+</svg>
+<svg id='bySemester'>
+  <div>{{chart2Data}}</div>
+</svg>
 <script>
 
 angular.module('ngAnimate', [])
@@ -199,7 +202,9 @@ angular.module('ngAnimate', [])
           })
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
         }
-        $scope.showDetail = function(course){
+        $scope.chart1Data = filters1;
+        $scope.chart2Data = filters2;
+        $scope.showDetail = function(course,year){
           currentDetailCourse = course;
           var t =courseinfoEachSemester.filter(function(d){
             return d.course == course;
@@ -208,9 +213,15 @@ angular.module('ngAnimate', [])
             console.log(t.length)
             filters1.course =  course;
             filters2.course = course;
-            filters1.year =  t[0].year;
-            filters2.year =  t[0].year;
-            filters1.semester =  t[0].semester;
+            filters1.year =  year;
+            filters2.year =  year;
+            filters1.semester =  t[0].emester;
+            var sm = d3.set();
+            t.forEach(function(d){
+              console.log(d)
+              sm.add(d.semester)});
+            filters2.semester = sm.values();
+            // console.log(sm.values());
             svg1.remove('g');
             svg1 = d3.select("#byGrade").append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -219,6 +230,8 @@ angular.module('ngAnimate', [])
             svg2 = d3.select("#bySemester").append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
             drawSecond();
+            $scope.chart1Data = filters1;
+            $scope.chart2Data = filters2;
           }
         
           // drawFirst();
@@ -454,20 +467,50 @@ d3.csv("output3.csv", function(error,data){
 
     var courseElement = svg.selectAll(".course")
       .data(courseGPAArrays, function(d){return d.name})
-    .enter().append("g")
+    courseElement.enter().append("g")
       .attr("class", "course");
 
     courseElement.append("path")
       .attr("class", "line")
-      .attr("d", function(d) { return lines(d.values); })
+      .attr("d", function(d) { 
+        return lines(d.values); })
       .style("stroke", function(d) { 
         return color(selectedCourses.indexOf(d.name)%20); })
       .style("stroke-width",2);
 
-    "Circles"
-    // courseElement.append('circle')
-    //   .attr("size",1)
-    //   .attr("d", function(d){ return circles(d.values)})
+
+    var circlesElement = courseElement.selectAll(".circles")
+        .data(function(d, i) { 
+          var vs =  d.values.map(function(dd){
+            return {
+              "Year": dd.Year,
+              "GPA": dd.GPA,
+              "Course": d.name
+            }
+          })
+          return vs;
+          })
+        .enter()
+        .append("circle")
+        .attr("cx",function(d){ return xx(d.Year)})
+        .attr("cy", function(d){ return yy(d.GPA)})
+        .attr("r",10)
+        .attr("ng-click",function(d){return "showDetail('"+d.Course+"','"+d.Year+"')" })
+        .style("opacity","0.2")
+        .style("fill","blue")
+        .style("z-index","1000")
+        .style("cursor","pointer")
+        ;
+    // "Circles"
+    // console.log(lines())
+    // <circle cx="50" cy="100" r="40" stroke="black" stroke-width="3" fill="red" />
+    // courseElement.each(function (dd,index) {
+    //   // console.log(dd);
+    //   d3.select(this).datum(dd.values).enter()
+      
+          
+    // });
+    
 
 
 
