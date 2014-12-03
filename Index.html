@@ -72,7 +72,7 @@
       <div class = "row right-row">
          <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
         <div class="col-md-12 chart2data">
-          <svg id='bySemester'> </svg>
+          <svg id='bySemester' "width"=570 "height"=380 > </svg>
         </div>
         <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
         <div class="col-md-12 chart1data">
@@ -175,6 +175,7 @@ angular.module('ngAnimate', [])
           }
 
         } 
+		
 
         $scope.selectSemester = function(semester){
           filters1.semester = semester;
@@ -602,8 +603,8 @@ function drawFirst() {
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<strong>Percentage:</strong> <span style='color:red'>" + (d.Y*100).toFixed(1) + "%" + "</span>" + "</br>" +
-             "<strong>GPA:</strong> <span style='color:red'>" + d.Z.toFixed(2) + "</span>"; })
+      return "<strong>Percentage:</strong> <span style='color:#FAEBD7'>" + (d.Y*100).toFixed(1) + "%" + "</span>" + "</br>" +
+             "<strong>GPA:</strong> <span style='color:#FAEBD7'>" + d.Z.toFixed(2) + "</span>"; })
   
   x.domain(xaxis);
   y.domain([0 , d3.max(yaxis, function (d) {return d.Y + .15; })]);
@@ -680,7 +681,7 @@ function drawSecond(){
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<strong>GPA:</strong> <span style='color:red'>" + +d.GPA + "</span>"; })
+      return "<strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span>"; })
 
   x.domain(csv.map(function(d) { return d.semester; }));
   y.domain([0,4]);
@@ -726,21 +727,23 @@ function drawSecond(){
 			  return .4;
 	      }
 	  })
-      .on('mouseout', tip.hide)
-      .on('mouseover', tip.show)
-      .on('click', function(d){
-		  filters1.semester = d.semester;
-          svg1.remove('g');
-          svg1 = d3.select("#byGrade").append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          drawFirst();
-          svg2.remove('g');
-          svg2 = d3.select("#bySemester").append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          drawSecond();
+	  .on("click",function(d){ 
 		  tip.hide();
-      })
+		  return refreshDetail(d.semester); })
+      .on('mouseout', tip.hide)
+	  .on('mouseover', tip.show);
+};
 
+function refreshDetail(semester){
+  filters1.semester = semester;
+  svg1.remove('g');
+  svg1 = d3.select("#byGrade").append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  drawFirst();
+  svg2.remove('g');
+  svg2 = d3.select("#bySemester").append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  drawSecond();
 };
 
 
