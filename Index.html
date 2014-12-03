@@ -84,9 +84,9 @@ opacity:0;
 opacity:1;
 }
 
-.bar {
+/*.bar {
   fill: orange;
-}
+}*/
 
 .bar:hover {
   fill: orangered ;
@@ -130,18 +130,6 @@ opacity:1;
     <!-- <svg id='test'></svg> -->
     <svg id='gpa'></svg>
   
-
-<!--     <div class="dropdown">
-  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-    Dropdown
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" id="dropdown-menu-btn" role="menu" aria-labelledby="dropdownMenu1">
-    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-
-  </ul>
-
-</div> -->
 <div style="position:absolute;top:100px;left:700px;width:auto" >
     <input type="text" id="searchBox" name="CourseName" style="width:100px" ng-init="show=false" placeholder="CoursesName"  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
     <div class="list-group" ng-show="checked" style="position:absolute;width:100px;z-index:100;">
@@ -153,7 +141,7 @@ opacity:1;
     <div style="position:absolute;top:40px;width:auto;z-index:1;">
       <div class="col-lg-6" style="padding-left:0px;">
         <div ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
-          style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()" >
+          style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()">
           <span class="input-group-btn">
             <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
           </span>
@@ -163,6 +151,7 @@ opacity:1;
       </div>  
 
 </div>
+
 <svg id='byGrade'>
   <div><div>{{chart1Data}}</div></div>
 </svg>
@@ -170,6 +159,11 @@ opacity:1;
   <div>{{chart2Data}}</div>
 </svg>
 <script>
+  
+var deleteCount = 0, addCount = 5;
+var colorsUsed = [0,1,2,3,4];
+var colorsNotUsed = [5,6,7,8,9];
+var courseColor;
 
 angular.module('ngAnimate', [])
     .controller('courseSearchController', ['$scope', function($scope) {
@@ -204,8 +198,10 @@ angular.module('ngAnimate', [])
         }
         $scope.chart1Data = filters1;
         $scope.chart2Data = filters2;
+        
         $scope.showDetail = function(course,year){
           currentDetailCourse = course;
+		      courseColor = course;
           var t =courseinfoEachSemester.filter(function(d){
             return d.course == course;
           });
@@ -230,8 +226,6 @@ angular.module('ngAnimate', [])
             svg2 = d3.select("#bySemester").append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
             drawSecond();
-            $scope.chart1Data = filters1;
-            $scope.chart2Data = filters2;
           }
         
           // drawFirst();
@@ -258,7 +252,10 @@ angular.module('ngAnimate', [])
             .attr("class", "line")
             .attr("d", function(d) { return lines(d.values); })
             .style("stroke", function(d) { 
-              return color(selectedCourses.indexOf(d.name)); })
+     	  		colorsUsed[colorsUsed.length] = colorsNotUsed[0]
+  	     	    colorsNotUsed.splice(0,1);
+				return color[colorsUsed[colorsUsed.length-1]];
+			 })
             .style("stroke-width",function(d){
               return 2
             })
@@ -307,6 +304,12 @@ angular.module('ngAnimate', [])
             $("#searchBox").val("");
             return;
           }
+		  
+		  if ((addCount - deleteCount) > 7) {
+			window.alert("The maximum number of classes is 8");
+			return;
+		  }
+		  addCount += 1;
 
           $("#searchBox").val("");
           selectedCourses.push(course);
@@ -332,6 +335,8 @@ angular.module('ngAnimate', [])
 
 
        $scope.deleteCourse = function(course){
+	  		  colorsNotUsed[colorsNotUsed.length] = colorsUsed[selectedCourses.indexOf(course)]
+     	      colorsUsed.splice(selectedCourses.indexOf(course),1);
               selectedCourses.splice(selectedCourses.indexOf(course), 1);
               $scope.selectedCourses = selectedCourses;
               $scope.dehighlight();
@@ -340,7 +345,7 @@ angular.module('ngAnimate', [])
               })
 
               $scope.updateView(courseGPAArrays,selectedCourses);
-
+			  deleteCount += 1;
           };
 
     }]);
@@ -362,7 +367,7 @@ var yy = d3.scale.linear()
     .range([height, 0]);
 
 
-var color = d3.scale.category20();
+var color = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a"];
 
 var xAxis = d3.svg.axis()
     .scale(xx).ticks(20).tickFormat(d3.format("d"))
@@ -392,6 +397,7 @@ var courseGPAArrays;
 var dataDics;
 var courseData;
 var compeleteCourseData;
+
 
 "Tess, use this to change your graph accordingly"
 var currentDetailCourse
@@ -466,18 +472,17 @@ d3.csv("output3.csv", function(error,data){
 
 
     var courseElement = svg.selectAll(".course")
-      .data(courseGPAArrays, function(d){return d.name})
+      .data(courseGPAArrays, function(d){return d.name});
+      
     courseElement.enter().append("g")
       .attr("class", "course");
 
     courseElement.append("path")
       .attr("class", "line")
-      .attr("d", function(d) { 
-        return lines(d.values); })
+      .attr("d", function(d) { return lines(d.values); })
       .style("stroke", function(d) { 
-        return color(selectedCourses.indexOf(d.name)%20); })
+		  return color[selectedCourses.indexOf(d.name)%20]; })
       .style("stroke-width",2);
-
 
     var circlesElement = courseElement.selectAll(".circles")
         .data(function(d, i) { 
@@ -500,17 +505,11 @@ d3.csv("output3.csv", function(error,data){
         .style("fill","blue")
         .style("z-index","1000")
         .style("cursor","pointer")
-        ;
-    // "Circles"
-    // console.log(lines())
-    // <circle cx="50" cy="100" r="40" stroke="black" stroke-width="3" fill="red" />
-    // courseElement.each(function (dd,index) {
-    //   // console.log(dd);
-    //   d3.select(this).datum(dd.values).enter()
-      
-          
-    // });
-    
+
+    "Circles"
+    // courseElement.append('circle')
+    //   .attr("size",1)
+    //   .attr("d", function(d){ return circles(d.values)})
 
 
 
@@ -661,6 +660,8 @@ function drawFirst() {
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.Y); })
       .attr("height", function(d) { return height - y(d.Y); })
+	  .attr("fill", function(d){ 
+		  return color[selectedCourses.indexOf(courseColor)]; })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
 };
@@ -726,6 +727,8 @@ function drawSecond(){
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(+d.GPA); })
       .attr("height", function(d) { return height - y(+d.GPA); })
+	  .attr("fill", function(d){ 
+		  return color[selectedCourses.indexOf(courseColor)]; })
       .on('mouseout', tip.hide)
       .on('mouseover', tip.show)
 
