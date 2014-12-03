@@ -2,13 +2,13 @@ body {
   font: 10px;
   padding: 20px;
   background-color: #99CCCC !important;
-  font-family: 'Geneva';
-
 }
 
 .container-fluid {
   background-color: #99CCCC !important;
   padding-left: 30px;
+  font-family: 'Cabin', Helvetica, Arial, sans-serif;
+
 }
 
 .row {
@@ -17,20 +17,20 @@ body {
 
 .right-row {
   float:right;
-  margin-top: -535px;
+  margin-top: -490px;
 }
 
 .selected-courses {
-  margin: 20px;
-}
-
-.added-course{ 
-  margin-bottom: 10px;
+  margin: 0px 40px;
 }
 
 .search-bar {
-  float:right !important;
-  margin-bottom: 10px;
+  margin-top: 5px;
+  float: right;
+}
+
+.search-bar-2 {
+   float: right;
 }
 
 .inside {
@@ -38,6 +38,17 @@ body {
   background-color: #FAEBD7;
   position: relative;
   height: 570px;
+  overflow: hidden;
+}
+
+h1 {
+  font-family: 'Lobster', Georgia, Times, serif;
+  font-size: 70px;
+  margin: -1px 10px;
+}
+
+.search-bar-text {
+
 }
 
 .title {
@@ -49,6 +60,7 @@ body {
   width: 100%;
   height: 90px;
   z-index: 1;
+
 }
 
 .gauge {
@@ -76,7 +88,7 @@ body {
 /*  width: ;
 */  height: 50px;
   position: relative;
-  margin-top: -68px;
+  margin-top: -69px;
 }
 
 .gpa-for-gauge {
@@ -101,19 +113,22 @@ body {
 }
 
 .chart-header {
-  margin-left:40px;
+  margin-top:20px;
   text-align: center;
 }
 
 #bySemester {
-  margin-left:40px;
-  margin-top: -10px;
-
+  margin-left:50px;
 }
 
 #byGrade { 
-  margin-left:40px;
-  margin-top: -10px;
+  margin-left:50px;
+  margin-top: 20px;
+}
+
+#gpa {
+  margin-left: 40px;
+  margin-top: 10px;
 }
 
 .chart1data {

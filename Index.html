@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-  <link rel="stylesheet" href="styles.css">
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  
+  <link href="http://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Cabin" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="styles.css">
 
   <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
@@ -21,11 +24,11 @@
 
 <body ng-app="ngAnimate" ng-controller="courseSearchController">
 <div class = "title"> 
-  <h1> Course Buddy: <i>Fail Less Frequently</i> </h1> 
+  <h1> Course Buddy </h1> 
   <div class = "gauge">
     <div class = "gpa-for-gauge">
       Average GPA for Selected Course Load: <br>
-      <span class = "gpa" style = "color: {{gaugeColor}}"> {{averageGPA}} </span>
+      <span class = "gpa"> {{averageGPA}} </span>
     </div>
     <div id = "gauge-fill" style="width: {{gaugeWidth}}px; background-color: {{gaugeColor}}"></div>
 
@@ -40,20 +43,22 @@
     <div class="row left-row">
       <!-- Main visualization on the left, displaying graph for selected courses-->
       <div class="col-md-12">
-        <div class= "chart-header"><h4>Average GPA Over Time For Selected Courses</h4></div>
         <svg id='gpa'></svg>   
       </div>
       <div class="col-md-12 selected-courses"> 
             <div class = "col-md-12">
-            <div class = "search-bar">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-              <input type="text" id="searchBox" name="CourseName" ng-init="show=false" placeholder="Search..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
-              <div class="list-group" ng-show="checked" style="position:absolute;width:28%;height:80px;z-index:100; margin-left:15px">
-                <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
-                   {{course}}
-                </a>
+              <span class = "col-md-6 search-bar-text"><h4>Selected Courses</h4></span>
+              <div class = "col-md-6 search-bar">
+                <div class = "search-bar-2">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                <input type="text" id="searchBox" name="CourseName" ng-init="show=false" placeholder="Search..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
+                <div class="list-group" ng-show="checked" style="position:absolute;width:61%;height:80px;z-index:100; margin-left:15px">
+                  <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
+                     {{course}}
+                  </a>
+                </div>
               </div>
-            </div>
+              </div>
             </div>
             <div class = "col-md-3 added-course" ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
               style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()">
@@ -67,12 +72,10 @@
       <div class = "row right-row">
          <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
         <div class="col-md-12 chart2data">
-          <div class = "chart-header"> <h4>{{chart2Data.course}} Semester Breakdown for {{chart2Data.year}} </h4></div>
           <svg id='bySemester'> </svg>
         </div>
         <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
         <div class="col-md-12 chart1data">
-          <div class = "chart-header"> <h4>{{chart1Data.course}} Letter Grade Breakdown for {{chart1Data.year}}</h4></div>
           <svg id='byGrade'> </svg>
         </div>
       </div>
@@ -91,7 +94,7 @@ angular.module('ngAnimate', [])
       //**************************************
         //TODO: calculate averageGPA for real
       //**************************************
-        $scope.averageGPA = 2.8
+        $scope.averageGPA = 3.1
         $scope.gaugeWidth = $scope.averageGPA * 100;
         if ($scope.gaugeWidth <= 100) {
           $scope.gaugeColor = "#F7977A";
@@ -432,6 +435,12 @@ d3.csv("output3.csv", function(error,data){
       .style("text-anchor", "end")
       .text("Average GPA");
 
+    svg.append("g")
+      .append("text")
+      .attr("x", 60)
+      .attr("class", "h4")
+      .attr("text-align", "center")
+      .text("Average GPA Over Time For Selected Courses");
 
 
 
@@ -619,8 +628,8 @@ function drawFirst() {
   svg1.append("g")
 	  .append("text")
 	  .attr("x", 40)
-	  .attr("y", -10)
-	  .attr("font-size", "16px")
+    .attr("class", "h4")
+    .attr("text-align", "center")
 	  .text(filters1.course + " Letter Grade Breakdown for " + filters1.semester + " " + filters1.year);
 
   svg1.selectAll(".bar")
@@ -696,8 +705,8 @@ function drawSecond(){
   svg2.append("g")
 	  .append("text")
 	  .attr("x", 60)
-	  .attr("y", -10)
-	  .attr("font-size", "16px")
+    .attr("class", "h4")
+    .attr("text-align", "center")
 	  .text(filters1.course + " Semester Breakdown for " + filters1.year);
 
   svg2.selectAll(".bar")
