@@ -37,44 +37,44 @@
 
 <div class="container-fluid">
 <div class = "inside">
-    <div class="row">
+    <div class="row left-row">
       <!-- Main visualization on the left, displaying graph for selected courses-->
-      <div class="col-md-6">
+      <div class="col-md-12">
+        <div class= "chart-header"><h4>Average GPA Over Time For Selected Courses</h4></div>
         <svg id='gpa'></svg>   
       </div>
-      <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
-      <div class="col-md-6 chart2data">
-        <div class = "chart-header"> <h4>{{chart2Data.course}} Semester Breakdown for {{chart2Data.year}} </h4></div>
-        <svg id='bySemester'> </svg>
-      </div>
-      <div class="col-md-6"> 
-          <div style = "margin-left:15px">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            <input type="text" id="searchBox" name="CourseName" style="width:18%" ng-init="show=false" placeholder="Search..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
-            <div class="list-group" ng-show="checked" style="position:absolute;width:18%;z-index:100; margin-left:15px">
-              <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
-                 {{course}}
-              </a>
+      <div class="col-md-12 selected-courses"> 
+            <div class = "col-md-12">
+            <div class = "search-bar">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+              <input type="text" id="searchBox" name="CourseName" ng-init="show=false" placeholder="Search..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
+              <div class="list-group" ng-show="checked" style="position:absolute;width:28%;height:80px;z-index:100; margin-left:15px">
+                <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
+                   {{course}}
+                </a>
+              </div>
             </div>
-          </div>
-          <div style="position:absolute;top:40px;width:auto;z-index:1;">
-            <div class = "col-md-3" ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
+            </div>
+            <div class = "col-md-3 added-course" ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
               style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()">
               <span class="input-group-btn">
                 <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
               </span>
                <span class="input-group-addon add-a-course" style="color:black; width: auto" ng-style="myColor(course)">{{course}}    </span>
             </div>
-            <div class = "col-md-3"> </div>
-            <div class = "col-md-3"> </div>
-            <div class = "col-md-3"> </div>
-            <div class = "col-md-3"> </div>
-          </div>  
       </div>
-      <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
-      <div id="bottom-right-chart" class="col-md-6 chart1data">
-        <div class = "chart-header"> <h4>{{chart1Data.course}} Letter Grade Breakdown for {{chart1Data.year}}</h4></div>
-        <svg id='byGrade'> </svg>
+      </div>
+      <div class = "row right-row">
+         <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
+        <div class="col-md-12 chart2data">
+          <div class = "chart-header"> <h4>{{chart2Data.course}} Semester Breakdown for {{chart2Data.year}} </h4></div>
+          <svg id='bySemester'> </svg>
+        </div>
+        <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
+        <div class="col-md-12 chart1data">
+          <div class = "chart-header"> <h4>{{chart1Data.course}} Letter Grade Breakdown for {{chart1Data.year}}</h4></div>
+          <svg id='byGrade'> </svg>
+        </div>
       </div>
     </div>
   </div>
@@ -104,16 +104,16 @@ angular.module('ngAnimate', [])
         $scope.averageGPA = 2.8
         $scope.gaugeWidth = $scope.averageGPA * 100;
         if ($scope.gaugeWidth <= 100) {
-          $scope.gaugeColor = "#FF0000";
+          $scope.gaugeColor = "#F7977A";
         }
         if ($scope.gaugeWidth <= 200 && $scope.gaugeWidth > 100) {
-          $scope.gaugeColor = "#FFA500";
+          $scope.gaugeColor = "#FDC68A";
         }
         if ($scope.gaugeWidth <= 300 && $scope.gaugeWidth > 200) {
-          $scope.gaugeColor = "#FFFF00";
+          $scope.gaugeColor = "#FFF79A";
         }
         if ($scope.gaugeWidth <= 400 && $scope.gaugeWidth > 300) {
-          $scope.gaugeColor = "#008000";
+          $scope.gaugeColor = "#82CA9D";
         }
         $scope.checked=false;
         $scope.selectedCourses = selectedCourses;

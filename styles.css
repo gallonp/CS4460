@@ -12,13 +12,32 @@ body {
 }
 
 .row {
-  width: auto;
+  width: 50%;
+}
+
+.right-row {
+  float:right;
+  margin-top: -535px;
+}
+
+.selected-courses {
+  margin: 20px;
+}
+
+.added-course{ 
+  margin-bottom: 10px;
+}
+
+.search-bar {
+  float:right !important;
+  margin-bottom: 10px;
 }
 
 .inside {
   margin-top: 60px;
   background-color: #FAEBD7;
   position: relative;
+  height: 570px;
 }
 
 .title {
@@ -43,13 +62,13 @@ body {
 }
 
 .gauge-text-hard {
-  color: #FF0000;
+  color: #ED1C24;
   font-weight: bold;
 }
 .gauge-text-easy {
   float:right;
   margin-top: -20px;
-  color: #228B22;
+  color: #00A651;
   font-weight: bold;
 }
 
@@ -98,7 +117,7 @@ body {
 }
 
 .chart1data {
-  margin-top: -160px;
+  margin-top: -150px;
 }
 
 .chart2data {
