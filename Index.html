@@ -77,7 +77,7 @@ angular.module('ngAnimate', [])
         allCourses.sort();
         $scope.courses = allCourses;
         $scope.myColor = function(course){
-          return {'background-color':color[selectedCourses.indexOf(course)]};
+          return {'background-color':color[colorsUsed[selectedCourses.indexOf(course)]]};
         }
         //highlight current mouseon course
         $scope.highlight = function(course){
