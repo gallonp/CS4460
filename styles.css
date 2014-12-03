@@ -174,10 +174,12 @@ overflow-x: hidden;
 .horizontalGrid  {
     stroke: lightgrey;
     opacity: 0.3;
+    z-index: -1;
 }
 .VerticalGrid  {
     stroke: lightgrey;
     opacity: 0.3;
+    z-index: -1;
 }
 
 .animate-if {
@@ -221,6 +223,7 @@ opacity:1;
   color: #FAEBD7;
   border-radius: 2px;
   text-align: center;
+  z-index:1000;
 }
 
 /* Creates a small triangle extender for the tooltip */
@@ -241,4 +244,17 @@ opacity:1;
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
+}
+
+
+.circles{
+  opacity: 0.05;
+  z-index:1000;
+  cursor: pointer;
+}
+.circles:hover {
+  opacity: 0.2;
+  fill: blue;
+  z-index:1000;
+  cursor: pointer;
 }

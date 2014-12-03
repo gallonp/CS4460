@@ -174,28 +174,38 @@ angular.module('ngAnimate', [])
 
           //This is appending new paths and stlying them for new coursing
           var newCourse = allCourses.enter().append("g");
+
+          var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+              return "<div class='tip'><strong>Course:</strong> <span style='color:#FAEBD7'>" + d.Course + "</span></div>"+
+              "<div class='tip'><strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span></div>"+
+              "<div class='tip'> <strong>Year:</strong> <span style='color:#FAEBD7'>" + +d.Year + "</span></div>"
+              ""; })
+
           var circlesElement = newCourse.selectAll(".circles")
           .data(function(d, i) { 
           var vs =  d.values.map(function(dd){
             return {
               "Year": dd.Year,
               "GPA": dd.GPA,
-              "Course": d.name
+              "Course": d.name,
+              "Highlighted":true
             }
           })
           return vs;
           })
-          .enter()
+          circlesElement.enter()
           .append("circle")
           .attr("cx",function(d){ return xx(d.Year)})
           .attr("cy", function(d){ return yy(d.GPA)})
           .attr("r",10)
+          .attr("class","circles")
           .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
-          .style("opacity","0.2")
-          .style("fill","blue")
-          .style("z-index","1000")
-          .style("cursor","pointer")
-
+          .on('mouseout', tip.hide)
+          .on('mouseover', tip.show)
+          circlesElement.call(tip)
 
           newCourse.attr("class", "course").append("path")
             .attr("class", "line")
@@ -203,7 +213,7 @@ angular.module('ngAnimate', [])
             .style("stroke", function(d) { 
      	  		colorsUsed[colorsUsed.length] = colorsNotUsed[0]
   	     	    colorsNotUsed.splice(0,1);
-				return color[colorsUsed[colorsUsed.length-1]];
+				  return color[colorsUsed[colorsUsed.length-1]];
 			 })
             .style("stroke-width",function(d){
               return 2
@@ -459,6 +469,15 @@ d3.csv("output7.csv", function(error,data){
 		  return color[selectedCourses.indexOf(d.name)%20]; })
       .style("stroke-width",2);
 
+    var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .offset([-10, 0])
+    .html(function(d) {
+      return "<div class='tip'><strong>Course:</strong> <span style='color:#FAEBD7'>" + d.Course + "</span></div>"+
+      "<div class='tip'><strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span></div>"+
+      "<div class='tip'> <strong>Year:</strong> <span style='color:#FAEBD7'>" + +d.Year + "</span></div>"
+      ""; })
+
     var circlesElement = courseElement.selectAll(".circles")
         .data(function(d, i) { 
           var vs =  d.values.map(function(dd){
@@ -470,16 +489,17 @@ d3.csv("output7.csv", function(error,data){
           })
           return vs;
           })
-        .enter()
+    circlesElement.enter()
         .append("circle")
         .attr("cx",function(d){ return xx(d.Year)})
         .attr("cy", function(d){ return yy(d.GPA)})
         .attr("r",10)
+        .attr("class","circles")
         .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
-        .style("opacity","0.2")
-        .style("fill","blue")
-        .style("z-index","1000")
-        .style("cursor","pointer")
+        .on('mouseout', tip.hide)
+        .on('mouseover', tip.show)
+    circlesElement.call(tip)
+    
 
     courseElement.append("text")
           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
