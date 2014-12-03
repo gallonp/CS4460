@@ -172,8 +172,7 @@ opacity:1;
 }
 */
 .bar:hover {
-  fill: #000;
-
+  fill: grey;
 }
 
 .x.axis path {
