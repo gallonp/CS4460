@@ -698,9 +698,9 @@ function drawSecond(){
 		  return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
 	  .attr("fill-opacity", function(d) {
 	      if (d.semester == filters1.semester) {
-			  return .4;
-	      } else {
 			  return 1;
+	      } else {
+			  return .4;
 	      }
 	  })
       .on('mouseout', tip.hide)
