@@ -615,6 +615,13 @@ function drawFirst() {
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Percent");
+	  
+  svg1.append("g")
+	  .append("text")
+	  .attr("x", 40)
+	  .attr("y", -10)
+	  .attr("font-size", "16px")
+	  .text(filters1.course + " Letter Grade Breakdown for " + filters1.semester + " " + filters1.year);
 
   svg1.selectAll(".bar")
       .data(yaxis)
@@ -685,6 +692,13 @@ function drawSecond(){
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("GPA");
+	  
+  svg2.append("g")
+	  .append("text")
+	  .attr("x", 60)
+	  .attr("y", -10)
+	  .attr("font-size", "16px")
+	  .text(filters1.course + " Semester Breakdown for " + filters1.year);
 
   svg2.selectAll(".bar")
       .data(csv)
