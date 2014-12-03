@@ -685,7 +685,7 @@ function drawFirst() {
       .attr("y", function(d) { return y(d.Y); })
       .attr("height", function(d) { return height - y(d.Y); })
 	  .attr("fill", function(d){ 
-		  return color[selectedCourses.indexOf(courseColor)]; })
+		  return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
 };
@@ -752,10 +752,16 @@ function drawSecond(){
       .attr("y", function(d) { return y(+d.GPA); })
       .attr("height", function(d) { return height - y(+d.GPA); })
 	  .attr("fill", function(d){ 
-		  return color[selectedCourses.indexOf(courseColor)]; })
+		  return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
       .on('mouseout', tip.hide)
       .on('mouseover', tip.show)
+      // .on('mouseclick', )
 
+};
+
+
+function selectSemester(course){
+  console.log(course);
 };
 
 </script>
