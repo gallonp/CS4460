@@ -215,7 +215,7 @@ angular.module('ngAnimate', [])
             filters2.course = course;
             filters1.year =  year;
             filters2.year =  year;
-            filters1.semester =  t[0].emester;
+            filters1.semester =  t[0].semester;
             var sm = d3.set();
             t.forEach(function(d){
               console.log(d)
@@ -576,20 +576,25 @@ var svg2 = d3.select("#bySemester")
   .append("g")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var courseinfoEachSemester;
-function drawFirst() {
 
-d3.csv("courseinfo3.csv", function(error, csv) {
+
+
+
+var courseinfoEachSemester;
+d3.csv("output5.csv", function(error, csv) {
   courseinfoEachSemester = csv;
-  csv = csv.filter(function(row) {
+  drawFirst();
+  drawSecond();
+});
+
+function drawFirst() {
+  var xaxis = ["A", "B", "C", "D", "F", "W"];
+  csv = courseinfoEachSemester.filter(function(row) {
           
           return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
               return pass && (!filters1[column] || row[column] === filters1[column] || filters1[column].indexOf(row[column]) >= 0 );
           }, true);
       })
-    
-  var xaxis = ["A", "B", "C", "D", "F", "W"];
-  
   yaxis = csv.map(function(d) {
     return  [{ X:"A", Y:+d['A']/100, Z:+d['GPA']}, 
            { X:"B", Y:+d['B']/100, Z:+d['GPA']}, 
@@ -658,14 +663,12 @@ d3.csv("courseinfo3.csv", function(error, csv) {
       .attr("height", function(d) { return height - y(d.Y); })
       .on('mouseover', tip.show)
       .on('mouseout', tip.hide)
-});
 };
 
-drawFirst();
+
 
 function drawSecond(){
-d3.csv("courseinfo3.csv", function(error, csv) {
-  csv = csv.filter(function(row) {
+   csv = courseinfoEachSemester.filter(function(row) {
           return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
               return pass && (!filters2[column] || row[column] === filters2[column] || filters2[column].indexOf(row[column]) >= 0 );
           }, true);
@@ -725,9 +728,8 @@ d3.csv("courseinfo3.csv", function(error, csv) {
       .attr("height", function(d) { return height - y(+d.GPA); })
       .on('mouseout', tip.hide)
       .on('mouseover', tip.show)
-});
-}
-drawSecond();
+
+};
 
 </script>
 
