@@ -116,6 +116,7 @@ angular.module('ngAnimate', [])
         $scope.myColor = function(course){
           return {'background-color':color[colorsUsed[selectedCourses.indexOf(course)]]};
         }
+        
         //highlight current mouseon course
         $scope.highlight = function(course){
           courseGPAArrays.forEach(function(d){
@@ -536,7 +537,7 @@ var svg2 = d3.select("#bySemester")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
 
@@ -695,14 +696,28 @@ function drawSecond(){
       .attr("height", function(d) { return height - y(+d.GPA); })
 	  .attr("fill", function(d){ 
 		  return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
+	  .attr("fill-opacity", function(d) {
+	      if (d.semester == filters1.semester) {
+			  return .4;
+	      } else {
+			  return 1;
+	      }
+	  })
       .on('mouseout', tip.hide)
       .on('mouseover', tip.show)
       .on('click', function(d){
 		  filters1.semester = d.semester;
-		  svg1.remove('g');
-          svg1 = d3.select("#byGrade").append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          svg1.remove('g');
+	      svg1 = d3.select("#byGrade")
+	        .attr("width", width + margin.left + margin.right)
+	        .attr("height", height + margin.top + margin.bottom)
+	      .append("g")
+	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
           drawFirst();
+          svg2.remove('g');
+          svg2 = d3.select("#bySemester").append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          drawSecond();
       })
 
 };
