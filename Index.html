@@ -20,17 +20,32 @@
 </head>
 
 <body ng-app="ngAnimate" ng-controller="courseSearchController">
+<div class = "title"> 
+  <h1> Course Buddy: <i>Fail Less Frequently</i> </h1> 
+  <div class = "gauge">
+    <div class = "gpa-for-gauge">
+      Average GPA for Selected Course Load: <br>
+      <span class = "gpa" style = "color: {{gaugeColor}}"> {{averageGPA}} </span>
+    </div>
+    <div id = "gauge-fill" style="width: {{gaugeWidth}}px; background-color: {{gaugeColor}}"></div>
+
+    <div class = "gauge-text-hard">Hard</div>
+    <div class = "gauge-text-easy">Easy</div>
+  </div>
+
+</div>
 
 <div class="container-fluid">
-  <h1> title wooooo </h1>
+<div class = "inside">
     <div class="row">
       <!-- Main visualization on the left, displaying graph for selected courses-->
       <div class="col-md-6">
         <svg id='gpa'></svg>   
       </div>
       <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
-      <div class="col-md-6">
-        <svg id='bySemester'> <div>{{chart2Data}}</div> </svg>
+      <div class="col-md-6 chart2data">
+        <div class = "chart-header"> <h4>{{chart2Data.course}} Semester Breakdown for {{chart2Data.year}} </h4></div>
+        <svg id='bySemester'> </svg>
       </div>
       <div class="col-md-6"> 
           <div style = "margin-left:15px">
@@ -50,24 +65,46 @@
               </span>
                <span class="input-group-addon add-a-course" style="color:black; width: auto" ng-style="myColor(course)">{{course}}    </span>
             </div>
+            <div class = "col-md-3"> </div>
+            <div class = "col-md-3"> </div>
+            <div class = "col-md-3"> </div>
+            <div class = "col-md-3"> </div>
           </div>  
       </div>
       <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
-      <div class="col-md-6">
-        <svg id='byGrade'> <div>{{chart1Data}}</div> </svg>
+      <div id="bottom-right-chart" class="col-md-6 chart1data">
+        <div class = "chart-header"> <h4>{{chart1Data.course}} Letter Grade Breakdown for {{chart1Data.year}}</h4></div>
+        <svg id='byGrade'> </svg>
       </div>
     </div>
   </div>
-
+</div>
 <script>
   
 var deleteCount = 0, addCount = 5;
 var colorsUsed = [0,1,2,3,4];
 var colorsNotUsed = [5,6,7,8,9];
-var courseColor;
+var courseColor = "CS 1301";
 
 angular.module('ngAnimate', [])
     .controller('courseSearchController', ['$scope', function($scope) {
+      //**************************************
+        //TODO: calculate averageGPA for real
+      //**************************************
+        $scope.averageGPA = 2.8
+        $scope.gaugeWidth = $scope.averageGPA * 100;
+        if ($scope.gaugeWidth <= 100) {
+          $scope.gaugeColor = "#FF0000";
+        }
+        if ($scope.gaugeWidth <= 200 && $scope.gaugeWidth > 100) {
+          $scope.gaugeColor = "#FFA500";
+        }
+        if ($scope.gaugeWidth <= 300 && $scope.gaugeWidth > 200) {
+          $scope.gaugeColor = "#FFFF00";
+        }
+        if ($scope.gaugeWidth <= 400 && $scope.gaugeWidth > 300) {
+          $scope.gaugeColor = "#008000";
+        }
         $scope.checked=false;
         $scope.selectedCourses = selectedCourses;
         $scope.search = function(){
@@ -278,7 +315,7 @@ angular.module('ngAnimate', [])
 
 //Setting margin and coordinate of the chart
 var margin = {top: 20, right: 80, bottom: 30, left: 50},
-    width = 600 - margin.left - margin.right,
+    width = 570 - margin.left - margin.right,
     height = 380 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format("%Y%m%d").parse;
@@ -292,7 +329,8 @@ var yy = d3.scale.linear()
     .range([height, 0]);
 
 
-var color = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a"];
+// var color = ["#a6cee3","#1f78b4","#b2df8a","#33a02c","#fb9a99","#e31a1c","#fdbf6f","#ff7f00","#cab2d6","#6a3d9a"];
+var color = ["#99CCCC","#EB6F7A","#A184A2","#F6906A","#78502D","#FEE080","#4876ff","#D0CE81"];
 
 var xAxis = d3.svg.axis()
     .scale(xx).ticks(20).tickFormat(d3.format("d"))
@@ -531,7 +569,7 @@ function drawFirst() {
 
   var margin = {top: 0, right: 0, bottom: 0, left: 0},
       width = 400 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom;
+      height = 200 - margin.top - margin.bottom;
 
   var formatPercent = d3.format(".0%");
 
@@ -593,6 +631,9 @@ function drawFirst() {
 
 
 
+
+
+
 function drawSecond(){
    csv = courseinfoEachSemester.filter(function(row) {
           return ['course','semester','year','A','B','C','D','F','W','GPA'].reduce(function(pass, column) {
@@ -600,9 +641,9 @@ function drawSecond(){
           }, true);
       })
     
-  var margin = {top: 40, right: 20, bottom: 30, left: 40},
+  var margin = {top: 40, right: 0, bottom: 30, left: 0},
       width = 400 - margin.left - margin.right,
-      height = 300 - margin.top - margin.bottom
+      height = 250 - margin.top - margin.bottom
   
   var x = d3.scale.ordinal()
       .rangeRoundBands([0, width], .1);
