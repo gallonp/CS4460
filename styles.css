@@ -2,23 +2,53 @@ body {
   font: 10px;
   padding: 20px;
   background-color: #99CCCC !important;
-  font-family: 'Geneva';
-
 }
 
 .container-fluid {
   background-color: #99CCCC !important;
   padding-left: 30px;
+  font-family: 'Cabin', Helvetica, Arial, sans-serif;
+
 }
 
 .row {
-  width: auto;
+  width: 50%;
+}
+
+.right-row {
+  float:right;
+  margin-top: -490px;
+}
+
+.selected-courses {
+  margin: 0px 40px;
+}
+
+.search-bar {
+  margin-top: 5px;
+  float: right;
+}
+
+.search-bar-2 {
+   float: right;
 }
 
 .inside {
   margin-top: 60px;
   background-color: #FAEBD7;
   position: relative;
+  height: 570px;
+  overflow: hidden;
+}
+
+h1 {
+  font-family: 'Lobster', Georgia, Times, serif;
+  font-size: 70px;
+  margin: -1px 10px;
+}
+
+.search-bar-text {
+
 }
 
 .title {
@@ -30,6 +60,7 @@ body {
   width: 100%;
   height: 90px;
   z-index: 1;
+
 }
 
 .gauge {
@@ -43,13 +74,13 @@ body {
 }
 
 .gauge-text-hard {
-  color: #FF0000;
+  color: #ED1C24;
   font-weight: bold;
 }
 .gauge-text-easy {
   float:right;
   margin-top: -20px;
-  color: #228B22;
+  color: #00A651;
   font-weight: bold;
 }
 
@@ -57,7 +88,7 @@ body {
 /*  width: ;
 */  height: 50px;
   position: relative;
-  margin-top: -68px;
+  margin-top: -69px;
 }
 
 .gpa-for-gauge {
@@ -82,23 +113,26 @@ body {
 }
 
 .chart-header {
-  margin-left:40px;
+  margin-top:20px;
   text-align: center;
 }
 
 #bySemester {
-  margin-left:40px;
-  margin-top: -10px;
-
+  margin-left:50px;
 }
 
 #byGrade { 
-  margin-left:40px;
-  margin-top: -10px;
+  margin-left:50px;
+  margin-top: 20px;
+}
+
+#gpa {
+  margin-left: 40px;
+  margin-top: 10px;
 }
 
 .chart1data {
-  margin-top: -160px;
+  margin-top: -150px;
 }
 
 .chart2data {
@@ -183,8 +217,8 @@ opacity:1;
   line-height: 1;
   font-weight: bold;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
+  background: grey;
+  color: #FAEBD7;
   border-radius: 2px;
   text-align: center;
 }
@@ -196,7 +230,7 @@ opacity:1;
   font-size: 10px;
   width: 100%;
   line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
+  color: grey;
   content: "\25BC";
   position: absolute;
   text-align: center;

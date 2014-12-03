@@ -1,31 +1,35 @@
+
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  
+  <link href="http://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+  <link href="http://fonts.googleapis.com/css?family=Cabin" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="styles.css">
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
-<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-<script src="http://d3js.org/d3.v3.js"></script>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script src="http://d3js.org/d3.v3.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 </head>
 
 <body ng-app="ngAnimate" ng-controller="courseSearchController">
 <div class = "title"> 
-  <h1> Course Buddy: <i>Fail Less Frequently</i> </h1> 
+  <h1> Course Buddy </h1> 
   <div class = "gauge">
     <div class = "gpa-for-gauge">
       Average GPA for Selected Course Load: <br>
-      <span class = "gpa" style = "color: {{gaugeColor}}"> {{averageGPA}} </span>
+      <span class = "gpa"> {{averageGPA}} </span>
     </div>
     <div id = "gauge-fill" style="width: {{gaugeWidth}}px; background-color: {{gaugeColor}}"></div>
 
@@ -37,44 +41,44 @@
 
 <div class="container-fluid">
 <div class = "inside">
-    <div class="row">
+    <div class="row left-row">
       <!-- Main visualization on the left, displaying graph for selected courses-->
-      <div class="col-md-6">
+      <div class="col-md-12">
         <svg id='gpa'></svg>   
       </div>
-      <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
-      <div class="col-md-6 chart2data">
-        <div class = "chart-header"> <h4>{{chart2Data.course}} Semester Breakdown for {{chart2Data.year}} </h4></div>
-        <svg id='bySemester'> </svg>
-      </div>
-      <div class="col-md-6"> 
-          <div style = "margin-left:15px">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            <input type="text" id="searchBox" name="CourseName" style="width:18%" ng-init="show=false" placeholder="Search..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
-            <div class="list-group" ng-show="checked" style="position:absolute;width:18%;z-index:100; margin-left:15px">
-              <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
-                 {{course}}
-              </a>
+      <div class="col-md-12 selected-courses"> 
+            <div class = "col-md-12">
+              <span class = "col-md-6 search-bar-text"><h4>Selected Courses</h4></span>
+              <div class = "col-md-6 search-bar">
+                <div class = "search-bar-2">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                <input type="text" id="searchBox" name="CourseName" ng-init="show=false" placeholder="Search..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
+                <div class="list-group" ng-show="checked" style="position:absolute;width:61%;height:80px;z-index:100; margin-left:15px">
+                  <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
+                     {{course}}
+                  </a>
+                </div>
+              </div>
+              </div>
             </div>
-          </div>
-          <div style="position:absolute;top:40px;width:auto;z-index:1;">
-            <div class = "col-md-3" ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
+            <div class = "col-md-3 added-course" ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
               style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()">
               <span class="input-group-btn">
                 <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
               </span>
                <span class="input-group-addon add-a-course" style="color:black; width: auto" ng-style="myColor(course)">{{course}}    </span>
             </div>
-            <div class = "col-md-3"> </div>
-            <div class = "col-md-3"> </div>
-            <div class = "col-md-3"> </div>
-            <div class = "col-md-3"> </div>
-          </div>  
       </div>
-      <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
-      <div id="bottom-right-chart" class="col-md-6 chart1data">
-        <div class = "chart-header"> <h4>{{chart1Data.course}} Letter Grade Breakdown for {{chart1Data.year}}</h4></div>
-        <svg id='byGrade'> </svg>
+      </div>
+      <div class = "row right-row">
+         <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
+        <div class="col-md-12 chart2data">
+          <svg id='bySemester' "width"=570 "height"=380 > </svg>
+        </div>
+        <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
+        <div class="col-md-12 chart1data">
+          <svg id='byGrade'> </svg>
+        </div>
       </div>
     </div>
   </div>
@@ -94,28 +98,34 @@ function updateModel(newFilter1, newFilter2){
     cachedCallbacks(newFilter1,newFilter2);
 };
 
-
 angular.module('ngAnimate', [])
     .controller('courseSearchController', ['$scope', function($scope) {
       //**************************************
         //TODO: calculate averageGPA for real
       //**************************************
-        $scope.averageGPA = 2.8
+        $scope.averageGPA = 3.1
         $scope.gaugeWidth = $scope.averageGPA * 100;
         if ($scope.gaugeWidth <= 100) {
-          $scope.gaugeColor = "#FF0000";
+          $scope.gaugeColor = "#F7977A";
         }
         if ($scope.gaugeWidth <= 200 && $scope.gaugeWidth > 100) {
-          $scope.gaugeColor = "#FFA500";
+          $scope.gaugeColor = "#FDC68A";
         }
         if ($scope.gaugeWidth <= 300 && $scope.gaugeWidth > 200) {
-          $scope.gaugeColor = "#FFFF00";
+          $scope.gaugeColor = "#FFF79A";
         }
         if ($scope.gaugeWidth <= 400 && $scope.gaugeWidth > 300) {
-          $scope.gaugeColor = "#008000";
+          $scope.gaugeColor = "#82CA9D";
         }
         $scope.checked=false;
         $scope.selectedCourses = selectedCourses;
+
+        registerCallback(function(newFilter1,newFilter2){
+          $scope.chart1Data = newFilter1;
+          $scope.chart2Data = newFilter2;
+          $scope.$apply() 
+        })
+
         $scope.search = function(){
             $scope.checked=true
         };
@@ -135,25 +145,20 @@ angular.module('ngAnimate', [])
                 d.highlight = false;
               }
           })
+
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
+
+
         }
-
-        $scope.chart1Data = filters1;
-        $scope.chart2Data = filters2;
-
-        registerCallback(function(newFilter1,newFilter2){
-          $scope.chart1Data = newFilter1;
-          $scope.chart2Data = newFilter2;
-          $scope.$apply() 
-        })
-
         $scope.dehighlight = function(){
           courseGPAArrays.forEach(function(d){
             d.highlight = true;
           })
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
         }
-        
+        $scope.chart1Data = filters1;
+        $scope.chart2Data = filters2;
+
         $scope.selectSemester = function(semester){
           filters1.semester = semester;
           $scope.chart1Data = filters1;
@@ -198,8 +203,8 @@ angular.module('ngAnimate', [])
             .style("stroke", function(d) { 
      	  		colorsUsed[colorsUsed.length] = colorsNotUsed[0]
   	     	    colorsNotUsed.splice(0,1);
-      				return color[colorsUsed[colorsUsed.length-1]];
-      			 })
+				return color[colorsUsed[colorsUsed.length-1]];
+			 })
             .style("stroke-width",function(d){
               return 2
             })
@@ -220,7 +225,6 @@ angular.module('ngAnimate', [])
               }
             })
           allCourses.selectAll("path").style("stroke-width",function(d){
-
               if (!d.highlight) {
                return 1
               } else {
@@ -235,6 +239,8 @@ angular.module('ngAnimate', [])
                     .duration(500)
                     .style("opacity","0")
                     .remove();   
+
+
         }
 
         //Add a course to selectedCourses and display them
@@ -247,34 +253,34 @@ angular.module('ngAnimate', [])
             $("#searchBox").val("");
             return;
           }
-    		  if ((addCount - deleteCount) > 7) {
-    			window.alert("The maximum number of classes is 8");
-    			return;
-    		  }
-    		  addCount += 1;
-              $("#searchBox").val("");
-              selectedCourses.push(course);
-              $scope.selectedCourses = selectedCourses;
-              courseData.forEach(function(d) {
-              if (selectedCourses.indexOf(d.Course)>-1){
-                        dataDics.push(d)
-                    }
-              });
-              courseGPAArrays = selectedCourses.map(function(course) {
-              return {
-                name: course,
-                values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
-                      return {GPA: d.GPA, Year: +d.Year, };
-                  }),
-                highlight:true
-                  };
-              });
-              $scope.updateView(courseGPAArrays,selectedCourses);
-              
-            }
-
+		  
+		  if ((addCount - deleteCount) > 7) {
+			window.alert("The maximum number of classes is 8");
+			return;
+		  }
+		  addCount += 1;
+          $("#searchBox").val("");
+          selectedCourses.push(course);
+          $scope.selectedCourses = selectedCourses;
+          courseData.forEach(function(d) {
+          if (selectedCourses.indexOf(d.Course)>-1){
+                    dataDics.push(d)
+                }
+          });
+          courseGPAArrays = selectedCourses.map(function(course) {
+          return {
+            name: course,
+            values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
+                  return {GPA: d.GPA, Year: +d.Year, };
+              }),
+            highlight:true
+              };
+          });
+          $scope.updateView(courseGPAArrays,selectedCourses);
+        }
 
        $scope.deleteCourse = function(course){
+		   if ((addCount-deleteCount) > 1) {
 	  		  colorsNotUsed[colorsNotUsed.length] = colorsUsed[selectedCourses.indexOf(course)]
      	      colorsUsed.splice(selectedCourses.indexOf(course),1);
               selectedCourses.splice(selectedCourses.indexOf(course), 1);
@@ -283,12 +289,15 @@ angular.module('ngAnimate', [])
               courseGPAArrays = courseGPAArrays.filter(function(d){
                 return d.name != course
               })
-
               $scope.updateView(courseGPAArrays,selectedCourses);
 			  deleteCount += 1;
+		  } else {
+		  	 window.alert("At least 1 class must be added");
+		  }
           };
 
-}]);
+    }]);
+
 function showDetails(course,year){
       courseColor = course;
       var t =courseinfoEachSemester.filter(function(d){
@@ -323,9 +332,6 @@ function showDetails(course,year){
 }
 
 
-
-
-
 //Setting margin and coordinate of the chart
 var margin = {top: 20, right: 80, bottom: 30, left: 50},
     width = 570 - margin.left - margin.right,
@@ -358,8 +364,6 @@ var lines = d3.svg.line()
     .x(function(d) { return xx(d.Year); })
     .y(function(d) { return yy(d.GPA); });
 
-"Circles"
-// var circles =  d3.svg.circle()
 
 function onlyUnique(value, index, self) { 
     return self.indexOf(value) === index;
@@ -380,15 +384,7 @@ var svg = d3.select('#gpa')
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-d3.csv("output4.csv", function(error,data){
 
-  data.forEach(function(d){
-    d.Year = parseInt(d.Year);
-    d.GPA = +d.GPA;
-  });
-  compeleteCourseData = data;
-//['courseID', 'profID', 'courseID.1', 'Course', 'Section', 'Year', 'Prof', 'A', 'B', 'C', 'D', 'F', 'W', 'Size', 'Level', 'GPA', 'Y', 'AverageGPA', 'Semester']
-})
 
 //Read data and draw stuff
 d3.csv("output7.csv", function(error,data){
@@ -441,6 +437,12 @@ d3.csv("output7.csv", function(error,data){
       .style("text-anchor", "end")
       .text("Average GPA");
 
+    svg.append("g")
+      .append("text")
+      .attr("x", 60)
+      .attr("class", "h4")
+      .attr("text-align", "center")
+      .text("Average GPA Over Time For Selected Courses");
 
 
 
@@ -478,13 +480,6 @@ d3.csv("output7.csv", function(error,data){
         .style("fill","blue")
         .style("z-index","1000")
         .style("cursor","pointer")
-
-    "Circles"
-    // courseElement.append('circle')
-    //   .attr("size",1)
-    //   .attr("d", function(d){ return circles(d.values)})
-
-
 
     courseElement.append("text")
           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
@@ -550,6 +545,8 @@ var svg2 = d3.select("#bySemester")
 
 
 
+
+
 var courseinfoEachSemester;
 d3.csv("output6.csv", function(error, csv) {
   courseinfoEachSemester = csv;
@@ -600,11 +597,11 @@ function drawFirst() {
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<strong>Percentage:</strong> <span style='color:red'>" + (d.Y*100).toFixed(1) + "%" + "</span>" + "</br>" +
-             "<strong>GPA:</strong> <span style='color:red'>" + d.Z.toFixed(2) + "</span>"; })
+      return "<strong>Percentage:</strong> <span style='color:#FAEBD7'>" + (d.Y*100).toFixed(1) + "%" + "</span>" + "</br>" +
+             "<strong>GPA:</strong> <span style='color:#FAEBD7'>" + d.Z.toFixed(2) + "</span>"; })
   
   x.domain(xaxis);
-  y.domain([0 , d3.max(yaxis, function (d) {return d.Y + .15; })]);
+  y.domain([0 , 1]);//d3.max(yaxis, function (d) {return d.Y + .15; })]);
 
   svg1.call(tip);
 
@@ -622,6 +619,13 @@ function drawFirst() {
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("Percent");
+	  
+  svg1.append("g")
+	  .append("text")
+	  .attr("x", 40)
+    .attr("class", "h4")
+    .attr("text-align", "center")
+	  .text(filters1.course + " Letter Grade Breakdown for " + filters1.semester + " " + filters1.year);
 
   svg1.selectAll(".bar")
       .data(yaxis)
@@ -671,10 +675,10 @@ function drawSecond(){
     .attr('class', 'd3-tip')
     .offset([-10, 0])
     .html(function(d) {
-      return "<strong>GPA:</strong> <span style='color:red'>" + +d.GPA + "</span>"; })
+      return "<strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span>"; })
 
   x.domain(csv.map(function(d) { return d.semester; }));
-  y.domain([d3.min(csv, function(d) { return +d.GPA - .4; }) , d3.max(csv, function(d) { return +d.GPA + .15; })]);
+  y.domain([0,4]);
 
   svg2.call(tip); 
   
@@ -692,6 +696,13 @@ function drawSecond(){
       .attr("dy", ".71em")
       .style("text-anchor", "end")
       .text("GPA");
+	  
+  svg2.append("g")
+	  .append("text")
+	  .attr("x", 60)
+    .attr("class", "h4")
+    .attr("text-align", "center")
+	  .text(filters1.course + " Semester Breakdown for " + filters1.year);
 
   svg2.selectAll(".bar")
       .data(csv)
@@ -705,28 +716,28 @@ function drawSecond(){
 		  return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
 	  .attr("fill-opacity", function(d) {
 	      if (d.semester == filters1.semester) {
-			  return .4;
-	      } else {
 			  return 1;
+	      } else {
+			  return .4;
 	      }
 	  })
+	  .on("click",function(d){ 
+		  tip.hide();
+		  return refreshDetail(d.semester); })
       .on('mouseout', tip.hide)
-      .on('mouseover', tip.show)
-      .on('click', function(d){
-		  filters1.semester = d.semester;
-          svg1.remove('g');
-	      svg1 = d3.select("#byGrade")
-	        .attr("width", width + margin.left + margin.right)
-	        .attr("height", height + margin.top + margin.bottom)
-	      .append("g")
-	        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          drawFirst();
-          svg2.remove('g');
-          svg2 = d3.select("#bySemester").append("g")
-          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-          drawSecond();
-      })
+	  .on('mouseover', tip.show);
+};
 
+function refreshDetail(semester){
+  filters1.semester = semester;
+  svg1.remove('g');
+  svg1 = d3.select("#byGrade").append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  drawFirst();
+  svg2.remove('g');
+  svg2 = d3.select("#bySemester").append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  drawSecond();
 };
 
 
@@ -736,7 +747,4 @@ function selectSemester(course){
 
 </script>
 
-
-
 </body>
-
