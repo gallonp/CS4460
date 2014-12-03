@@ -656,7 +656,13 @@ function drawSecond(){
 		  return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
       .on('mouseout', tip.hide)
       .on('mouseover', tip.show)
-      // .on('mouseclick', )
+      .on('click', function(d){
+		  filters1.semester = d.semester;
+		  svg1.remove('g');
+          svg1 = d3.select("#byGrade").append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          drawFirst();
+      })
 
 };
 
