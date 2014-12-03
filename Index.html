@@ -114,7 +114,7 @@ angular.module('ngAnimate', [])
         allCourses.sort();
         $scope.courses = allCourses;
         $scope.myColor = function(course){
-          return {'background-color':color[selectedCourses.indexOf(course)]};
+          return {'background-color':color[colorsUsed[selectedCourses.indexOf(course)]]};
         }
         //highlight current mouseon course
         $scope.highlight = function(course){
@@ -697,7 +697,13 @@ function drawSecond(){
 		  return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
       .on('mouseout', tip.hide)
       .on('mouseover', tip.show)
-      // .on('mouseclick', )
+      .on('click', function(d){
+		  filters1.semester = d.semester;
+		  svg1.remove('g');
+          svg1 = d3.select("#byGrade").append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+          drawFirst();
+      })
 
 };
 
