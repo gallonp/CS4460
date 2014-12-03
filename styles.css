@@ -1,5 +1,77 @@
 body {
-  font: 10px sans-serif;
+  font: 10px;
+  padding: 20px;
+  background-color: #99CCCC !important;
+  font-family: 'Geneva';
+
+}
+
+.container-fluid {
+  background-color: #99CCCC !important;
+  padding-left: 30px;
+}
+
+.row {
+  width: auto;
+}
+
+.inside {
+  margin-top: 60px;
+  background-color: #FAEBD7;
+  position: relative;
+}
+
+.title {
+  background-color: #99CCCC;
+  margin-left: 10px;
+  margin-top: -25px;
+  padding: 5px;
+  position:fixed;
+  width: 100%;
+  height: 90px;
+  z-index: 1;
+}
+
+.gauge {
+    width: 400px;
+    height: 50px;
+    background-color: #fff;
+    z-index: 2;
+    margin-right: 60px;
+    margin-top: -60px;
+    float:right;
+}
+
+.gauge-text-hard {
+  color: #FF0000;
+  font-weight: bold;
+}
+.gauge-text-easy {
+  float:right;
+  margin-top: -20px;
+  color: #228B22;
+  font-weight: bold;
+}
+
+#gauge-fill {
+/*  width: ;
+*/  height: 50px;
+  position: relative;
+  margin-top: -68px;
+}
+
+.gpa-for-gauge {
+  width: 150px;
+  position: relative;
+  text-wrap: normal;
+  margin-left: -150px;
+  font-size: 9pt;
+  text-align: center;
+}
+
+.gpa {
+  font-weight: bold;
+  font-size: 18pt;
 }
 
 .add-a-course:hover {
@@ -7,6 +79,30 @@ body {
   a:hover {
     cursor:pointer;
   }
+}
+
+.chart-header {
+  margin-left:40px;
+  text-align: center;
+}
+
+#bySemester {
+  margin-left:40px;
+  margin-top: -10px;
+
+}
+
+#byGrade { 
+  margin-left:40px;
+  margin-top: -10px;
+}
+
+.chart1data {
+  margin-top: -160px;
+}
+
+.chart2data {
+ /* margin-top: -30px;*/
 }
 
 .list-group-item {
@@ -71,12 +167,12 @@ opacity:0;
 opacity:1;
 }
 
-.bar {
-  fill: orange;
+/*.bar {
+  fill: #94D5D9;
 }
-
+*/
 .bar:hover {
-  fill: orangered ;
+  fill: grey;
 }
 
 .x.axis path {
