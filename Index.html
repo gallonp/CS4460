@@ -310,7 +310,7 @@ function showDetails(course,year){
         filters2.course = course;
         filters1.year = year;
         filters2.year = year;
-        filters1.semester = t[0].semester;
+        filters1.semester = "Spring";
         var sm = d3.set();
         t.forEach(function(d){
           // console.log(d)
@@ -521,7 +521,7 @@ d3.csv("output7.csv", function(error,data){
   
 var filters1 = {
     'course': 'CS 1301',
-  'semester': 'Fall',
+  'semester': 'Spring',
     'year': '2009' };
   
 var filters2 = {
