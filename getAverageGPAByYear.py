@@ -27,6 +27,6 @@ for course in courseKey:
         if len(cy) == 0: continue
         gpaAverage  = sum(cy['GPA'].tolist())/float(len(cy))
         # s,y = year.split()
-        newOutput = newOutput.append([{'Course':course, 'Year':y, 'GPA':gpaAverage}])
+        newOutput = newOutput.append([{'Course':course, 'Year':year, 'GPA':gpaAverage}])
  
 newOutput.to_csv('output7.csv',index=None)

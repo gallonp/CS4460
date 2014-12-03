@@ -91,7 +91,6 @@ function registerCallback(callback){
     cachedCallbacks = callback;
 };
 function updateModel(newFilter1, newFilter2){
-  console.log("called");
     cachedCallbacks(newFilter1,newFilter2);
 };
 
@@ -312,7 +311,6 @@ function showDetails(course,year){
         svg1.remove('g');
         svg1 = d3.select("#byGrade").append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        console.log(filters1)
         drawFirst();
         svg2.remove('g');
         svg2 = d3.select("#bySemester").append("g")
@@ -393,7 +391,7 @@ d3.csv("output4.csv", function(error,data){
 })
 
 //Read data and draw stuff
-d3.csv("output3.csv", function(error,data){
+d3.csv("output7.csv", function(error,data){
     // console.log(data)
     courseData = data;
     var couserSet =d3.set();
@@ -552,17 +550,14 @@ var svg2 = d3.select("#bySemester")
 
 
 
-
-
 var courseinfoEachSemester;
-d3.csv("output5.csv", function(error, csv) {
+d3.csv("output6.csv", function(error, csv) {
   courseinfoEachSemester = csv;
   drawFirst();
   drawSecond();
 });
 
 function drawFirst() {
-  console.log(filters1)
   var xaxis = ["A", "B", "C", "D", "F", "W"];
   csv = courseinfoEachSemester.filter(function(row) {
           
