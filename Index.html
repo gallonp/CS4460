@@ -1,56 +1,63 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-<link rel="stylesheet" href="styles.css">
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js"></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
 
-<script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-<script src="http://d3js.org/d3.v3.js"></script>
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <script src="http://d3js.org/d3.v3.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 </head>
 
 <body ng-app="ngAnimate" ng-controller="courseSearchController">
-    <!-- <svg id='test'></svg> -->
-    <svg id='gpa'></svg>
-  
-<div style="position:absolute;top:100px;left:700px;width:auto" >
-    <input type="text" id="searchBox" name="CourseName" style="width:100px" ng-init="show=false" placeholder="CoursesName"  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
-    <div class="list-group" ng-show="checked" style="position:absolute;width:100px;z-index:100;">
-      <a class="list-group-item" ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
-         {{course}}
-      </a>
 
+<div class="container-fluid">
+  <h1> title wooooo </h1>
+    <div class="row">
+      <!-- Main visualization on the left, displaying graph for selected courses-->
+      <div class="col-md-6">
+        <svg id='gpa'></svg>   
+      </div>
+      <!-- Top visualization on the right, displaying breakdown of grades for selected course-->
+      <div class="col-md-6">
+        <svg id='bySemester'> <div>{{chart2Data}}</div> </svg>
+      </div>
+      <div class="col-md-6"> 
+          <div style = "margin-left:15px">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            <input type="text" id="searchBox" name="CourseName" style="width:18%" ng-init="show=false" placeholder="Search..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
+            <div class="list-group" ng-show="checked" style="position:absolute;width:18%;z-index:100; margin-left:15px">
+              <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
+                 {{course}}
+              </a>
+            </div>
+          </div>
+          <div style="position:absolute;top:40px;width:auto;z-index:1;">
+            <div class = "col-md-3" ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
+              style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()">
+              <span class="input-group-btn">
+                <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
+              </span>
+               <span class="input-group-addon add-a-course" style="background-color:white; color:black; width: auto">{{course}}    </span>
+            </div>
+          </div>  
+      </div>
+      <!-- Bottom visualization on the right, displaying semester breakdown for selected course -->
+      <div class="col-md-6">
+        <svg id='byGrade'> <div>{{chart1Data}}</div> </svg>
+      </div>
     </div>
-    <div style="position:absolute;top:40px;width:auto;z-index:1;">
-      <div class="col-lg-6" style="padding-left:0px;">
-        <div ng-repeat="course in selectedCourses" class="input-group input-group-sm" 
-          style="padding-top:3px" ng-mouseenter="highlight(course)" ng-mouseleave="dehighlight()">
-          <span class="input-group-btn">
-            <button class="btn btn-default btn-sm" type="button" ng-click="deleteCourse(course)">X</button>
-          </span>
-           <span class="input-group-addon" style="background-color:white; color:black">{{course}}    </span>
-        </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
-      </div>  
-
-</div>
-
-<svg id='byGrade'>
-  <div><div>{{chart1Data}}</div></div>
-</svg>
-<svg id='bySemester'>
-  <div>{{chart2Data}}</div>
-</svg>
+  </div>
 <script>
   
 var deleteCount = 0, addCount = 5;
@@ -246,8 +253,8 @@ angular.module('ngAnimate', [])
 
 //Setting margin and coordinate of the chart
 var margin = {top: 20, right: 80, bottom: 30, left: 50},
-    width = 700 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+    width = 600 - margin.left - margin.right,
+    height = 380 - margin.top - margin.bottom;
 
 var parseDate = d3.time.format("%Y%m%d").parse;
 
@@ -497,9 +504,9 @@ function drawFirst() {
   })
   yaxis = yaxis[0]; 
 
-  var margin = {top: 40, right: 20, bottom: 30, left: 40},
-      width = 500 - margin.left - margin.right,
-      height = 270 - margin.top - margin.bottom;
+  var margin = {top: 0, right: 0, bottom: 0, left: 0},
+      width = 400 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom;
 
   var formatPercent = d3.format(".0%");
 
@@ -569,8 +576,8 @@ function drawSecond(){
       })
     
   var margin = {top: 40, right: 20, bottom: 30, left: 40},
-      width = 500 - margin.left - margin.right,
-      height = 270 - margin.top - margin.bottom
+      width = 400 - margin.left - margin.right,
+      height = 300 - margin.top - margin.bottom
   
   var x = d3.scale.ordinal()
       .rangeRoundBands([0, width], .1);
