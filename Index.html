@@ -302,6 +302,7 @@ angular.module('ngAnimate', [])
 
 
        $scope.deleteCourse = function(course){
+		   if ((addCount-deleteCount) > 1) {
 	  		  colorsNotUsed[colorsNotUsed.length] = colorsUsed[selectedCourses.indexOf(course)]
      	      colorsUsed.splice(selectedCourses.indexOf(course),1);
               selectedCourses.splice(selectedCourses.indexOf(course), 1);
@@ -313,6 +314,9 @@ angular.module('ngAnimate', [])
 
               $scope.updateView(courseGPAArrays,selectedCourses);
 			  deleteCount += 1;
+		  } else {
+		  	 window.alert("At least 1 class must be added");
+		  }
           };
 
     }]);
@@ -607,7 +611,7 @@ function drawFirst() {
              "<strong>GPA:</strong> <span style='color:#FAEBD7'>" + d.Z.toFixed(2) + "</span>"; })
   
   x.domain(xaxis);
-  y.domain([0 , d3.max(yaxis, function (d) {return d.Y + .15; })]);
+  y.domain([0 , 1]);//d3.max(yaxis, function (d) {return d.Y + .15; })]);
 
   svg1.call(tip);
 
