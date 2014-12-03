@@ -2,21 +2,20 @@
 <meta charset="utf-8">
 <head>
   <link rel="stylesheet" href="styles.css">
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular-animate.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<script src="vendor/angular.min.js"></script>
+<script src="vendor/angular-animate.js"></script>
+<link rel="stylesheet" href="vendor/bootstrap.min.css">
 
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+<!-- Optional theme -->
+<link rel="stylesheet" href="CSS/bootstrap.min.css">
+<script src="vendor/jquery-2.1.0.min.js"></script>
 
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="vendor/bootstrap.min.js"></script>
 
-  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-  <script src="http://d3js.org/d3.v3.js"></script>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<!-- <script src="http://d3js.org/d3.v3.js"></script> -->
+<script src="D3/d3/d3.min.js"></script>
+  <script src="vendor/d3.tip.v0.6.3.js"></script>
 </head>
 
 <body ng-app="ngAnimate" ng-controller="courseSearchController">
@@ -66,6 +65,16 @@ var colorsUsed = [0,1,2,3,4];
 var colorsNotUsed = [5,6,7,8,9];
 var courseColor;
 
+var cachedCallbacks
+function registerCallback(callback){
+    cachedCallbacks = callback;
+};
+function updateModel(newFilter1, newFilter2){
+  console.log("called");
+    cachedCallbacks(newFilter1,newFilter2);
+};
+
+
 angular.module('ngAnimate', [])
     .controller('courseSearchController', ['$scope', function($scope) {
         $scope.checked=false;
@@ -88,53 +97,25 @@ angular.module('ngAnimate', [])
                 d.highlight = false;
               }
           })
-
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
-
-
         }
+
+        $scope.chart1Data = filters1;
+        $scope.chart2Data = filters2;
+
+        registerCallback(function(newFilter1,newFilter2){
+          $scope.chart1Data = newFilter1;
+          $scope.chart2Data = newFilter2;
+          $scope.$apply() 
+        })
+
         $scope.dehighlight = function(){
           courseGPAArrays.forEach(function(d){
             d.highlight = true;
           })
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
         }
-        $scope.chart1Data = filters1;
-        $scope.chart2Data = filters2;
         
-        $scope.showDetail = function(course,year){
-          currentDetailCourse = course;
-		      courseColor = course;
-          var t =courseinfoEachSemester.filter(function(d){
-            return d.course == course;
-          });
-          if (t.length>0){
-            console.log(t.length)
-            filters1.course =  course;
-            filters2.course = course;
-            filters1.year =  year;
-            filters2.year =  year;
-            filters1.semester =  t[0].semester;
-            var sm = d3.set();
-            t.forEach(function(d){
-              console.log(d)
-              sm.add(d.semester)});
-            filters2.semester = sm.values();
-            // console.log(sm.values());
-            svg1.remove('g');
-            svg1 = d3.select("#byGrade").append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            drawFirst();
-            svg2.remove('g');
-            svg2 = d3.select("#bySemester").append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-            drawSecond();
-            $scope.chart1Data = filters1;
-            $scope.chart2Data = filters2;
-          }
-
-        } 
-
         $scope.selectSemester = function(semester){
           filters1.semester = semester;
           $scope.chart1Data = filters1;
@@ -166,7 +147,7 @@ angular.module('ngAnimate', [])
           .attr("cx",function(d){ return xx(d.Year)})
           .attr("cy", function(d){ return yy(d.GPA)})
           .attr("r",10)
-          .attr("ng-click",function(d){return "showDetail('"+d.Course+"','"+d.Year+"')" })
+          .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
           .style("opacity","0.2")
           .style("fill","blue")
           .style("z-index","1000")
@@ -179,8 +160,8 @@ angular.module('ngAnimate', [])
             .style("stroke", function(d) { 
      	  		colorsUsed[colorsUsed.length] = colorsNotUsed[0]
   	     	    colorsNotUsed.splice(0,1);
-				return color[colorsUsed[colorsUsed.length-1]];
-			 })
+      				return color[colorsUsed[colorsUsed.length-1]];
+      			 })
             .style("stroke-width",function(d){
               return 2
             })
@@ -201,6 +182,7 @@ angular.module('ngAnimate', [])
               }
             })
           allCourses.selectAll("path").style("stroke-width",function(d){
+
               if (!d.highlight) {
                return 1
               } else {
@@ -215,8 +197,6 @@ angular.module('ngAnimate', [])
                     .duration(500)
                     .style("opacity","0")
                     .remove();   
-
-
         }
 
         //Add a course to selectedCourses and display them
@@ -229,34 +209,31 @@ angular.module('ngAnimate', [])
             $("#searchBox").val("");
             return;
           }
-		  
-		  if ((addCount - deleteCount) > 7) {
-			window.alert("The maximum number of classes is 8");
-			return;
-		  }
-		  addCount += 1;
-
-          $("#searchBox").val("");
-          selectedCourses.push(course);
-          $scope.selectedCourses = selectedCourses;
-          courseData.forEach(function(d) {
-          if (selectedCourses.indexOf(d.Course)>-1){
-                    dataDics.push(d)
-                }
-          });
-          courseGPAArrays = selectedCourses.map(function(course) {
-          return {
-            name: course,
-            values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
-                  return {GPA: d.GPA, Year: +d.Year, };
-              }),
-            highlight:true
-              };
-          });
-
-          $scope.updateView(courseGPAArrays,selectedCourses);
-          
-        }
+    		  if ((addCount - deleteCount) > 7) {
+    			window.alert("The maximum number of classes is 8");
+    			return;
+    		  }
+    		  addCount += 1;
+              $("#searchBox").val("");
+              selectedCourses.push(course);
+              $scope.selectedCourses = selectedCourses;
+              courseData.forEach(function(d) {
+              if (selectedCourses.indexOf(d.Course)>-1){
+                        dataDics.push(d)
+                    }
+              });
+              courseGPAArrays = selectedCourses.map(function(course) {
+              return {
+                name: course,
+                values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
+                      return {GPA: d.GPA, Year: +d.Year, };
+                  }),
+                highlight:true
+                  };
+              });
+              $scope.updateView(courseGPAArrays,selectedCourses);
+              
+            }
 
 
        $scope.deleteCourse = function(course){
@@ -273,7 +250,43 @@ angular.module('ngAnimate', [])
 			  deleteCount += 1;
           };
 
-    }]);
+}]);
+function showDetails(course,year){
+      courseColor = course;
+      var t =courseinfoEachSemester.filter(function(d){
+        return d.course == course;
+      });
+      if (t.length>0){
+        // console.log(t.length)
+        // console.log(t)
+        filters1.course = course;
+        filters2.course = course;
+        filters1.year = year;
+        filters2.year = year;
+        filters1.semester = t[0].semester;
+        var sm = d3.set();
+        t.forEach(function(d){
+          // console.log(d)
+          sm.add(d.semester)});
+        filters2.semester = sm.values();
+        // console.log(sm.values());
+        svg1.remove('g');
+        svg1 = d3.select("#byGrade").append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        console.log(filters1)
+        drawFirst();
+        svg2.remove('g');
+        svg2 = d3.select("#bySemester").append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        drawSecond();
+        updateModel(filters1,filters2);
+        // $scope.chart1Data = filters1;
+        // $scope.chart2Data = filters2;
+      }
+}
+
+
+
 
 
 //Setting margin and coordinate of the chart
@@ -323,9 +336,6 @@ var dataDics;
 var courseData;
 var compeleteCourseData;
 
-
-"Tess, use this to change your graph accordingly"
-var currentDetailCourse
 //Select a tag named gpa and use the svg handler to put stuff on it
 var svg = d3.select('#gpa')
         .attr("width", width + margin.left + margin.right)
@@ -425,7 +435,7 @@ d3.csv("output3.csv", function(error,data){
         .attr("cx",function(d){ return xx(d.Year)})
         .attr("cy", function(d){ return yy(d.GPA)})
         .attr("r",10)
-        .attr("ng-click",function(d){return "showDetail('"+d.Course+"','"+d.Year+"')" })
+        .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
         .style("opacity","0.2")
         .style("fill","blue")
         .style("z-index","1000")
@@ -512,6 +522,7 @@ d3.csv("output5.csv", function(error, csv) {
 });
 
 function drawFirst() {
+  console.log(filters1)
   var xaxis = ["A", "B", "C", "D", "F", "W"];
   csv = courseinfoEachSemester.filter(function(row) {
           
