@@ -221,6 +221,10 @@ opacity:1;
   fill: grey;
 }
 
+.chart2data  .bar:hover {
+  cursor: pointer;
+}
+
 .x.axis path {
   display: none;
 }
