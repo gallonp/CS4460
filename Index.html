@@ -47,14 +47,15 @@
       <div class="col-md-12">
         <svg id='gpa'></svg>   
       </div>
+      <!-- Selected Courses controls under main visualization -->
       <div class="col-md-12 selected-courses"> 
             <div class = "col-md-12">
               <span class = "col-md-6 search-bar-text"><h4>Selected Courses</h4></span>
               <div class = "col-md-6 search-bar">
                 <div class = "search-bar-2">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                <input type="text" id="searchBox" name="CourseName" ng-init="show=false" placeholder="Search for Course"  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
-                <div class="list-group" ng-show="checked" style="position:absolute;width:61%;height:80px;z-index:100; margin-left:15px">
+                <input type="text" id="searchBox" name="CourseName" ng-init="show=false" placeholder="Search for course..."  ng-keypress="search()" ng-blur="addCourse()" ng-model="query" ng-focus="checked=true">
+                <div class="list-group" ng-show="checked" style="position:absolute;width:61%;height:100px;z-index:100; margin-left:15px">
                   <a class="list-group-item " ng-repeat="course in courses | filter:query"  ng-mousedown="addCourse(course);event.stopPropagation()" >
                      {{course}}
                   </a>
@@ -81,7 +82,9 @@
           <svg id='byGrade'> </svg>
         </div>
       </div>
-    </div>
+  </div>
+  <div class = "sga-credit"><i>Data provided by SGA Course Critique Committee.</i></div>
+
   </div>
 </div>
 <script>
