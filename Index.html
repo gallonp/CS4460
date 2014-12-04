@@ -340,11 +340,21 @@ function showDetails(course,year){
         filters2.course = course;
         filters1.year = year;
         filters2.year = year;
-        filters1.semester = "Spring";
         var sm = d3.set();
         t.forEach(function(d){
           // console.log(d)
           sm.add(d.semester)});
+		  if ((sm.values().indexOf("Spring") == -1) && (sm.values().indexOf("Summer") == -1)) {
+		  	filters1.semester = "Fall";
+		  } else if ((sm.values().indexOf("Fall") == -1) && (sm.values().indexOf("Summer") == -1)) {
+		  	filters1.semester = "Spring";
+		  } else if ((sm.values().indexOf("Fall") == -1) && (sm.values().indexOf("Spring") == -1)){
+		  	filters1.semester = "Summer";
+		  } else if (sm.values().indexOf("Spring") != -1) {
+		  	filters1.semester = "Spring";
+		  } else {
+		  	filters1.semester = "Fall";
+		  } 
         filters2.semester = sm.values();
         // console.log(sm.values());
         svg1.remove('g');
