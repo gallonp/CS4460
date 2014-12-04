@@ -75,13 +75,13 @@ h1 {
 }
 
 .gauge-text-hard {
-  color: #ED1C24;
+  color: black;
   font-weight: bold;
 }
 .gauge-text-easy {
   float:right;
   margin-top: -20px;
-  color: #00A651;
+  color: black;
   font-weight: bold;
 }
 
