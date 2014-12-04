@@ -145,11 +145,9 @@ angular.module('ngAnimate', [])
                 d.highlight = false;
               }
           })
-
           $scope.updateView(courseGPAArrays,$scope.selectedCourses)
-
-
         }
+
         $scope.dehighlight = function(){
           courseGPAArrays.forEach(function(d){
             d.highlight = true;
@@ -168,6 +166,18 @@ angular.module('ngAnimate', [])
           drawFirst();
         }
 
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+              if (d == undefined){
+                return ""
+              } else{
+              return "<div class='tip'><strong>Course:</strong> <span style='color:#FAEBD7'>" + d.Course + "</span></div>"+
+              "<div class='tip'><strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span></div>"+
+              "<div class='tip'> <strong>Year:</strong> <span style='color:#FAEBD7'>" + +d.Year + "</span></div>"
+              "";} })
+
         $scope.updateView = function(courseGPAArrays,selectedCourses){
           var allCourses = svg.selectAll(".course")
             .data(courseGPAArrays,function(d){return d.name})
@@ -175,28 +185,18 @@ angular.module('ngAnimate', [])
           //This is appending new paths and stlying them for new coursing
           var newCourse = allCourses.enter().append("g");
 
-          var tip = d3.tip()
-            .attr('class', 'd3-tip')
-            .offset([-10, 0])
-            .html(function(d) {
-              return "<div class='tip'><strong>Course:</strong> <span style='color:#FAEBD7'>" + d.Course + "</span></div>"+
-              "<div class='tip'><strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span></div>"+
-              "<div class='tip'> <strong>Year:</strong> <span style='color:#FAEBD7'>" + +d.Year + "</span></div>"
-              ""; })
-
           var circlesElement = newCourse.selectAll(".circles")
           .data(function(d, i) { 
           var vs =  d.values.map(function(dd){
             return {
               "Year": dd.Year,
               "GPA": dd.GPA,
-              "Course": d.name,
-              "Highlighted":true
+              "Course": d.name
             }
           })
           return vs;
           })
-          circlesElement.enter()
+          .enter()
           .append("circle")
           .attr("cx",function(d){ return xx(d.Year)})
           .attr("cy", function(d){ return yy(d.GPA)})
@@ -205,7 +205,7 @@ angular.module('ngAnimate', [])
           .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
           .on('mouseout', tip.hide)
           .on('mouseover', tip.show)
-          circlesElement.call(tip)
+          .call(tip)
 
           newCourse.attr("class", "course").append("path")
             .attr("class", "line")
@@ -213,18 +213,18 @@ angular.module('ngAnimate', [])
             .style("stroke", function(d) { 
      	  		colorsUsed[colorsUsed.length] = colorsNotUsed[0]
   	     	    colorsNotUsed.splice(0,1);
-				  return color[colorsUsed[colorsUsed.length-1]];
-			 })
+      				  return color[colorsUsed[colorsUsed.length-1]];
+      			 })
             .style("stroke-width",function(d){
               return 2
             })
 
           newCourse.append("text")
-                .attr("transform", function(d) { 
-                  return "translate(" + width + "," + yy(d.values[d.values.length - 1].GPA) + ")"; })
-                .attr("x", 3)
-                .attr("dy", ".35em")
-                .text(function(d) { return d.name; });;
+              .attr("transform", function(d) { 
+                return "translate(" + width + "," + yy(d.values[d.values.length - 1].GPA) + ")"; })
+              .attr("x", 3)
+              .attr("dy", ".35em")
+              .text(function(d) { return d.name; });;
           
           //This is update section to change the style of all course paths
           allCourses.style("opacity",function(d) {
@@ -264,30 +264,30 @@ angular.module('ngAnimate', [])
             return;
           }
 		  
-		  if ((addCount - deleteCount) > 7) {
-			window.alert("The maximum number of classes is 8");
-			return;
-		  }
-		  addCount += 1;
-          $("#searchBox").val("");
-          selectedCourses.push(course);
-          $scope.selectedCourses = selectedCourses;
-          courseData.forEach(function(d) {
-          if (selectedCourses.indexOf(d.Course)>-1){
-                    dataDics.push(d)
-                }
-          });
-          courseGPAArrays = selectedCourses.map(function(course) {
-          return {
-            name: course,
-            values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
-                  return {GPA: d.GPA, Year: +d.Year, };
-              }),
-            highlight:true
-              };
-          });
-          $scope.updateView(courseGPAArrays,selectedCourses);
-        }
+    		  if ((addCount - deleteCount) > 7) {
+    			window.alert("The maximum number of classes is 8");
+    			return;
+    		  }
+    		  addCount += 1;
+              $("#searchBox").val("");
+              selectedCourses.push(course);
+              $scope.selectedCourses = selectedCourses;
+              courseData.forEach(function(d) {
+              if (selectedCourses.indexOf(d.Course)>-1){
+                        dataDics.push(d)
+                    }
+              });
+              courseGPAArrays = selectedCourses.map(function(course) {
+              return {
+                name: course,
+                values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
+                      return {GPA: d.GPA, Year: +d.Year, };
+                  }),
+                highlight:true
+                  };
+              });
+              $scope.updateView(courseGPAArrays,selectedCourses);
+            }
 
        $scope.deleteCourse = function(course){
 		   if ((addCount-deleteCount) > 1) {
@@ -489,7 +489,7 @@ d3.csv("output7.csv", function(error,data){
           })
           return vs;
           })
-    circlesElement.enter()
+        .enter()
         .append("circle")
         .attr("cx",function(d){ return xx(d.Year)})
         .attr("cy", function(d){ return yy(d.GPA)})
@@ -498,7 +498,7 @@ d3.csv("output7.csv", function(error,data){
         .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
         .on('mouseout', tip.hide)
         .on('mouseover', tip.show)
-    circlesElement.call(tip)
+        .call(tip)
     
 
     courseElement.append("text")
