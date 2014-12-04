@@ -72,6 +72,13 @@ h1 {
     margin-right: 60px;
     margin-top: -60px;
     float:right;
+
+    /*Border Added By Gabby*/
+    border: 1px solid #60A87B;
+
+    /*Added by Gabby to attempt styling*/
+    margin-left: 60%;
+    float: left;
 }
 
 .gauge-text-hard {
