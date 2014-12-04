@@ -87,7 +87,7 @@
   
 var deleteCount = 0, addCount = 5;
 var colorsUsed = [0,1,2,3,4];
-var colorsNotUsed = [5,6,7,8,9];
+var colorsNotUsed = [5,6,7];
 var courseColor = "CS 1301";
 
 var cachedCallbacks
@@ -301,6 +301,8 @@ angular.module('ngAnimate', [])
               });
               $scope.updateView(courseGPAArrays,selectedCourses);
               $scope.calculateAverageGPAForAllCourse();
+			  console.log(colorsUsed);
+			  console.log(colorsNotUsed);
             }
 
        $scope.deleteCourse = function(course){
