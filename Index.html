@@ -115,22 +115,23 @@ angular.module('ngAnimate', [])
           $scope.averageGPA = (tempSum/courseGPAArrays.length).toFixed(2);
           //console.log($scope.averageGPA)
           $scope.gaugeWidth = $scope.averageGPA * 100;
+          if ($scope.gaugeWidth <= 100) {
+            $scope.gaugeColor = "#F7977A";
+          }
+          if ($scope.gaugeWidth <= 200 && $scope.gaugeWidth > 100) {
+            $scope.gaugeColor = "#FDC68A";
+          }
+          if ($scope.gaugeWidth <= 300 && $scope.gaugeWidth > 200) {
+            $scope.gaugeColor = "#FFF79A";
+          }
+          if ($scope.gaugeWidth <= 400 && $scope.gaugeWidth > 300) {
+            $scope.gaugeColor = "#82CA9D";
+          }
         }
         $scope.calculateAverageGPAForAllCourse();
 
 
-        if ($scope.gaugeWidth <= 100) {
-          $scope.gaugeColor = "#F7977A";
-        }
-        if ($scope.gaugeWidth <= 200 && $scope.gaugeWidth > 100) {
-          $scope.gaugeColor = "#FDC68A";
-        }
-        if ($scope.gaugeWidth <= 300 && $scope.gaugeWidth > 200) {
-          $scope.gaugeColor = "#FFF79A";
-        }
-        if ($scope.gaugeWidth <= 400 && $scope.gaugeWidth > 300) {
-          $scope.gaugeColor = "#82CA9D";
-        }
+        
         $scope.checked=false;
         $scope.selectedCourses = selectedCourses;
 
