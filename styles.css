@@ -125,11 +125,13 @@ h1 {
 #byGrade { 
   margin-left:50px;
   margin-top: 20px;
+  overflow: visible;
 }
 
 #gpa {
   margin-left: 40px;
   margin-top: 10px;
+  overflow: visible;
 }
 
 .chart1data {
