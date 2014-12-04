@@ -249,13 +249,12 @@ opacity:1;
 
 
 .circles{
-  opacity: 0.05;
+  opacity: 0.2;
   z-index:1000;
   cursor: pointer;
 }
 .circles:hover {
-  opacity: 0.2;
-  fill: blue;
+  opacity: 0.5;
   z-index:1000;
   cursor: pointer;
 }

@@ -254,6 +254,7 @@ angular.module('ngAnimate', [])
               .style("stroke", function(d) { 
               colorsUsed[colorsUsed.length] = colorsNotUsed[0]
                 colorsNotUsed.splice(0,1);
+                d.Color = color[colorsUsed[colorsUsed.length-1]];
                   return color[colorsUsed[colorsUsed.length-1]];
                })
               .style("stroke-width",function(d){
@@ -282,7 +283,8 @@ angular.module('ngAnimate', [])
                 return {
                   "Year": dd.Year,
                   "GPA": dd.GPA,
-                  "Course": d.name
+                  "Course": d.name,
+                  "Color": d.Color
                 }
               })
               return vs;
@@ -296,6 +298,7 @@ angular.module('ngAnimate', [])
               .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
               .on('mouseout', tip.hide)
               .on('mouseover', tip.show)
+              .style("fill",function(d){return d.Color})
               .call(tip)
               $scope.calculateAverageGPAForAllCourse();
           }
@@ -496,7 +499,8 @@ d3.csv("output7.csv", function(error,data){
       .attr("class", "line")
       .attr("d", function(d) { return lines(d.values); })
       .style("stroke", function(d) { 
-		  return color[selectedCourses.indexOf(d.name)%20]; })
+        d.Color = color[selectedCourses.indexOf(d.name)%20]
+		    return color[selectedCourses.indexOf(d.name)%20]; })
       .style("stroke-width",2);
 
     var tip = d3.tip()
@@ -514,7 +518,8 @@ d3.csv("output7.csv", function(error,data){
             return {
               "Year": dd.Year,
               "GPA": dd.GPA,
-              "Course": d.name
+              "Course": d.name,
+              "Color": d.Color
             }
           })
           return vs;
@@ -525,6 +530,7 @@ d3.csv("output7.csv", function(error,data){
         .attr("cy", function(d){ return yy(d.GPA)})
         .attr("r",10)
         .attr("class","circles")
+        .style("fill",function(d){return d.Color})
         .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
         .on('mouseout', tip.hide)
         .on('mouseover', tip.show)
