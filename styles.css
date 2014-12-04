@@ -5,10 +5,13 @@ body {
 }
 
 .container-fluid {
-  background-color: #99CCCC !important;
-  padding-left: 30px;
   font-family: 'Cabin', Helvetica, Arial, sans-serif;
+  margin-top: -50px;
+}
 
+.sga-credit {
+  text-align: center;
+  margin-top: 10px;
 }
 
 .row {
@@ -21,55 +24,54 @@ body {
 }
 
 .selected-courses {
-  margin: 0px 40px;
+  margin-left: 60px;
   min-height: 106px;
 }
 
 .search-bar {
-  margin-top: 5px;
-  float: right;
+  float:right;
+  margin-top: 10px;
 }
 
 .search-bar-2 {
-   float: right;
+  input {
+    float:right;
+  }
 }
+
 
 .inside {
   margin-top: 60px;
-  background-color: #FAEBD7;
+  background-color: #fef9ed;
   position: relative;
-  height: 570px;
+  height: 550px;
   overflow: hidden;
 }
 
 h1 {
   font-family: 'Lobster', Georgia, Times, serif;
-  font-size: 70px;
+  font-size: 60px;
   margin: -1px 10px;
 }
 
 .search-bar-text {
-
 }
 
 .title {
   background-color: #99CCCC;
-  margin-left: 10px;
-  margin-top: -25px;
+  margin-left: 0px;
+  margin-top: -20px;
   padding: 5px;
-  position:fixed;
+ /* position:fixed;*/
   width: 100%;
-  height: 90px;
   z-index: 1;
-
 }
 
 .gauge {
     width: 400px;
-    height: 50px;
+    height: 40px;
     background-color: #fff;
     z-index: 2;
-    margin-right: 60px;
     margin-top: -60px;
     float:right;
 
@@ -77,7 +79,7 @@ h1 {
     border: 1px solid #60A87B;
 
     /*Added by Gabby to attempt styling*/
-    margin-left: 60%;
+    margin-left: 58%;
     float: left;
 }
 
@@ -94,7 +96,7 @@ h1 {
 
 #gauge-fill {
 /*  width: ;
-*/  height: 50px;
+*/  height: 40px;
   position: relative;
   margin-top: -69px;
 }
@@ -114,7 +116,7 @@ h1 {
 }
 
 .add-a-course:hover {
-  cursor: pointer;
+  cursor: default;
   a:hover {
     cursor:pointer;
   }
@@ -136,7 +138,7 @@ h1 {
 }
 
 #gpa {
-  margin-left: 40px;
+  margin-left: 60px;
   margin-top: 10px;
   overflow: visible;
 }
@@ -204,12 +206,10 @@ opacity:0;
 opacity:1;
 }
 
-/*.bar {
-  fill: #94D5D9;
-}
-*/
+
 .bar:hover {
   fill: grey;
+  cursor: pointer;
 }
 
 .chart2data  .bar:hover {
