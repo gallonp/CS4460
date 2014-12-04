@@ -23,7 +23,7 @@
   <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 </head>
 
-<!--Title of Webpage, Avg GPA, Sliding GPA Bar -->
+<!--Title of Webpage, Avg GPA, GPA Gauge -->
 <body ng-app="ngAnimate" ng-controller="courseSearchController">
 <div class = "title"> 
   <h1> Course Buddy </h1> 
@@ -179,7 +179,7 @@ angular.module('ngAnimate', [])
         $scope.chart1Data = filters1;
         $scope.chart2Data = filters2;
 
-		
+		//adjust bar graphs when semesters are selected
         $scope.selectSemester = function(semester){
           filters1.semester = semester;
           $scope.chart1Data = filters1;
@@ -190,7 +190,7 @@ angular.module('ngAnimate', [])
         }
 
         
-
+		//update grapgh for class add/delete
         $scope.updateView = function(courseGPAArrays,selectedCourses){
           var allCourses = svg.selectAll(".course")
             .data(courseGPAArrays,function(d){return d.name})
@@ -349,15 +349,12 @@ function showDetails(course,year){
         return d.course == course;
       });
       if (t.length>0){
-        // console.log(t.length)
-        // console.log(t)
         filters1.course = course;
         filters2.course = course;
         filters1.year = year;
         filters2.year = year;
         var sm = d3.set();
         t.forEach(function(d){
-          // console.log(d)
           sm.add(d.semester)});
 		  console.log(sm);
 		  if ((sm.values().indexOf("Spring") == -1) && (sm.values().indexOf("Summer") == -1)) {
@@ -444,7 +441,6 @@ var svg = d3.select('#gpa')
 
 //Read and draw data
 d3.csv("output7.csv", function(error,data){
-    // console.log(data)
     courseData = data;
     var couserSet =d3.set();
     data.forEach(function(d) {
@@ -459,12 +455,10 @@ d3.csv("output7.csv", function(error,data){
     
     var N = 20; 
     var indexRange = Array.apply(null, {length: N}).map(Number.call, Number)
-    // console.log(indexRange)
     
     // color.domain(indexRange);
 
     courseGPAArrays = selectedCourses.map(function(course) {
-      // console.log(course);
     return { 
       name: course,
       values: data.filter(function(d) { return d.Course == course ; }).map(function(d) {
@@ -510,7 +504,8 @@ d3.csv("output7.csv", function(error,data){
 
     courseElement.enter().append("g")
       .attr("class", "course");
-
+    
+	//append lines to graph
     courseElement.append("path")
       .attr("class", "line")
       .attr("d", function(d) { return lines(d.values); })
@@ -590,7 +585,7 @@ d3.csv("output7.csv", function(error,data){
 
 });
 
-//Global Variables: pass in class name
+//filters for selecting individual classes from csv
 //filters1 is grade breakdown
 //filters2 is semester breakdown
   
@@ -617,9 +612,6 @@ var svg2 = d3.select("#bySemester")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-
-
 
 //load bar graph data
 var courseinfoEachSemester;
