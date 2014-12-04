@@ -163,16 +163,7 @@ height: auto;
 max-height: 258px;
 overflow-x: hidden;
 }
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
 
-.x.axis path {
-  display: none;
-}
 
 .line {
   fill: none;
@@ -226,7 +217,7 @@ opacity:1;
 }
 
 .x.axis path {
-  display: none;
+  z-index:3000;
 }
 
 .d3-tip {
@@ -270,4 +261,12 @@ opacity:1;
   opacity: 0.5;
   z-index:1000;
   cursor: pointer;
+}
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
 }

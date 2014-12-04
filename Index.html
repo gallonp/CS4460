@@ -560,7 +560,7 @@ d3.csv("output7.csv", function(error,data){
           .text(function(d) { return d.name; });
     
 	//horizontal grid lines
-    svg.selectAll("line.horizontalGrid").data(yy.ticks(5)).enter()
+    svg.selectAll("line.horizontalGrid").data(yy.ticks(8)).enter()
     .append("line")
         .attr(
         {
@@ -687,12 +687,13 @@ function drawFirst() {
   //append axis of bar graph
   svg1.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + (height+1) + ")")
       .call(xAxis);
 
   svg1.append("g")
       .attr("class", "y axis")
       .call(yAxis)
+      .attr("transform", "translate(0,1)")
     .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", -60)
@@ -771,12 +772,13 @@ function drawSecond(){
   //append axis 
   svg2.append("g")
       .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
+      .attr("transform", "translate(0," + (height+1) + ")")
       .call(xAxis);
 
   svg2.append("g")
       .attr("class", "y axis")
       .call(yAxis)
+      .attr("transform", "translate(0,1)")
     .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", -50)
