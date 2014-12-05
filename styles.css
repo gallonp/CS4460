@@ -7,6 +7,8 @@ body {
 .container-fluid {
   font-family: 'Cabin', Helvetica, Arial, sans-serif;
   margin-top: -50px;
+  padding-top: 20px;
+
 }
 
 .sga-credit {
@@ -41,10 +43,10 @@ body {
 
 
 .inside {
-  margin-top: 60px;
+  margin-top: 45px;
   background-color: #fef9ed;
   position: relative;
-  height: 550px;
+  height: 525px;
   overflow: hidden;
 }
 
@@ -79,24 +81,24 @@ h1 {
     border: 1px solid #60A87B;
 
     /*Added by Gabby to attempt styling*/
-    margin-left: 58%;
+    margin-left: 60%;
     float: left;
 }
 
 .gauge-text-hard {
-  color: black;
+  color: #333;
   font-weight: bold;
 }
 .gauge-text-easy {
   float:right;
   margin-top: -20px;
-  color: black;
+  color: #333;
   font-weight: bold;
 }
 
 #gauge-fill {
 /*  width: ;
-*/  height: 40px;
+*/  height: 38px;
   position: relative;
   margin-top: -69px;
 }
