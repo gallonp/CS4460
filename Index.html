@@ -91,11 +91,12 @@
 </div>
 
 <script type="text/javascript">
-/////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 "Global variables for color & tracking added classes"
 var deleteCount = 0, addCount = 5;
-var colorsUsed = [0,1,2,3,4];
-var colorsNotUsed = [5,6,7];
+var colorsUsed = [];
+var colorsNotUsed = [0,1,2,3,4,5,6,7];
 var courseColor = "CS 1301";
 var cachedCallbacks;
 var courseinfoEachSemester;
@@ -114,7 +115,8 @@ var parseDate = d3.time.format("%Y%m%d").parse;
 //colors used for lines/ bars
 var color = ["#99CCCC","#EB6F7A","#A184A2","#F6906A","#63AB62","#FEE080","#4876ff","#78502D"];//""#D0CE81"];//"#00688B"
 
-/////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 "Chart for Course GPAs over the years"
 //Setting margin and coordinates of the line graph
 var margin = {top: 20, right: 80, bottom: 30, left: 50},
@@ -129,20 +131,29 @@ var xx = d3.scale.linear()
 var yy = d3.scale.linear()
     .range([height, 0]);
 
-var xAxis = d3.svg.axis()
-    .scale(xx).ticks(5).tickFormat(d3.format("d"))
-    .orient("bottom");
-
-var yAxis = d3.svg.axis()
-    .scale(yy)
-    .orient("left");
-
 var lines = d3.svg.line()
     .interpolate("linear")
     .x(function(d) { return xx(d.Year); })
     .y(function(d) { return yy(d.GPA); });
+    //tooltip for line graph
+var tip = d3.tip()
+.attr('class', 'd3-tip')
+.offset([-10, 0])
+.html(function(d) {
+  return "<div class='tip'><strong>Course:</strong> <span style='color:#FAEBD7'>" + d.Course + "</span></div>"+
+  "<div class='tip'><strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span></div>"+
+  "<div class='tip'> <strong>Year:</strong> <span style='color:#FAEBD7'>" + +d.Year + "</span></div>"
+  ""; })
+//Select a tag named gpa and use the svg handler to put data in it
+var svg = d3.select('#gpa')
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-/////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 "Chart for Course GPA breakdown by Semester"
 var margin2 = {top: 0, right: 0, bottom: 0, left: 0},
     width2 = 400 - margin2.left - margin2.right,
@@ -178,46 +189,6 @@ var tip2 = d3.tip()
 x2.domain(["A", "B", "C", "D", "F", "W"]);
 y2.domain([0 , 1]);
 
-/////////////////////////////////////////////////////////
-"Chart for Course GPA breakdown by Grade"
-
-var margin3 = {top: 40, right: 0, bottom: 30, left: 0},
-    width3 = 400 - margin3.left - margin3.right,
-    height3 = 250 - margin3.top - margin3.bottom
-
-var x3 = d3.scale.ordinal()
-    .rangeRoundBands([0, width3], .1);
-
-var y3 = d3.scale.linear()
-    .range([height3, 0]);
-
-var xAxis3 = d3.svg.axis()
-    .scale(x3)
-    .orient("bottom");
-
-var yAxis3 = d3.svg.axis()
-    .scale(y3)
-    .orient("left")
-    .tickValues([0.0, 1.0, 2.0, 3.0, 4.0])
-    
-//bar graph tooltip
-var tip3 = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-10, 0])
-  .html(function(d) {
-    return "<strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span>"; })
-
-//bar graph domain & range
-x3.domain(["Spring", "Summer", "Fall"]); 
-y3.domain([0,4]);
-/////////////////////////////////////////////////////////
-
-//Select a tag named gpa and use the svg handler to put data in it
-var svg = d3.select('#gpa')
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 var svg2 = d3.select("#byGrade")
      .attr("width", width + margin.left + margin.right)
      .attr("height", height + margin.top + margin.bottom)
@@ -251,6 +222,39 @@ svg2.append("g")
 
 svg2.call(tip2);
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+"Chart for Course GPA breakdown by Grade"
+
+var margin3 = {top: 40, right: 0, bottom: 30, left: 0},
+    width3 = 400 - margin3.left - margin3.right,
+    height3 = 250 - margin3.top - margin3.bottom
+
+var x3 = d3.scale.ordinal()
+    .rangeRoundBands([0, width3], .1);
+
+var y3 = d3.scale.linear()
+    .range([height3, 0]);
+
+var xAxis3 = d3.svg.axis()
+    .scale(x3)
+    .orient("bottom");
+
+var yAxis3 = d3.svg.axis()
+    .scale(y3)
+    .orient("left")
+    .tickValues([0.0, 1.0, 2.0, 3.0, 4.0])
+    
+//bar graph tooltip
+var tip3 = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span>"; })
+
+//bar graph domain & range
+x3.domain(["Spring", "Summer", "Fall"]); 
+y3.domain([0,4]);
 
 var svg3 = d3.select("#bySemester")
     .attr("width", width + margin.left + margin.right)
@@ -284,6 +288,20 @@ svg3.append("g")
   .attr("class", "h4")
   .attr("text-align", "center")
     .text(currentCourse.course + " Semester Breakdown for " + currentCourse.year);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 function registerCallback(callback){
     cachedCallbacks = callback;
@@ -291,6 +309,90 @@ function registerCallback(callback){
 function updateModel(newFilter){
     cachedCallbacks(newFilter);
 };
+
+// function updateGAPLineChart(){
+//     var courseElement = svg.selectAll(".course")
+//       .data(courseGPAArrays, function(d){return d.name});
+//     courseElement.selectAll("path").data(function(d){
+//       console.log(d)
+//       return d
+//     })
+//     .style("stroke-width",function(d){
+//       if (!d.highlight) {return 1} 
+//       else {return 2}
+//     })
+//     .style("opacity",function(d) {
+//       if (!d.highlight) {return 0.3} 
+//       else {return 1}
+//     })
+// }
+function drawGPALineChart(){
+    var courseElement = svg.selectAll(".course")
+      .data(courseGPAArrays, function(d){
+        // console.log(d.name)
+        // console.log(d.highlight)
+        return d.name});
+
+    var newCourse = courseElement.enter().append("g")
+    newCourse
+      .attr("class", "course").append("path")
+      .attr("class", "line")
+      .attr("d", function(d){
+        return lines(d.values);
+      })
+      .style("stroke", function(d) { 
+        colorsUsed[colorsUsed.length] = colorsNotUsed[0]
+        colorsNotUsed.splice(0,1);
+        d.Color = color[colorsUsed[colorsUsed.length-1]];
+        return d.Color
+      })
+      .append("text")
+      .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+      .attr("transform", function(d) { return "translate(" + xx(d.value.Year) + "," + yy(d.value.GPA) + ")"; })
+      .attr("x", 3)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+
+    courseElement.selectAll("path")
+    .style("stroke-width",function(d){
+      if (!d.highlight) {return 1} 
+      else {return 2}
+    })
+    .style("opacity",function(d) {
+      if (!d.highlight) {return 0.3} 
+      else {return 1}
+    })
+
+    //bubbles around data points on line graph
+    if (!newCourse.empty()){
+    var circlesElement = newCourse.selectAll(".circles")
+        .data(function(d, i) { 
+          var vs =  d.values.map(function(dd){
+            return {
+              "Year": dd.Year,
+              "GPA": dd.GPA,
+              "Course": d.name,
+              "Color": d.Color
+            }
+          })
+          return vs;
+          }, function(d){
+            return d.Course+d.Year
+          })
+        .enter()
+        .append("circle")
+        .attr("cx",function(d){ return xx(d.Year)})
+        .attr("cy", function(d){ return yy(d.GPA)})
+        .attr("r",10)
+        .attr("class","circles")
+        .style("fill",function(d){return d.Color})
+        .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
+        .on('mouseout', tip.hide)
+        .on('mouseover', tip.show)
+        .call(tip)
+    }
+}
+
 
 //draws Letter Breakdown bar graph
 function drawByGrade() {
@@ -325,35 +427,36 @@ function drawByGrade() {
       .on('mouseover', tip2.show)
       .on('mouseout', tip2.hide)
 
-
   grades.transition().duration(250)
-  .attr("x", function(d) { return x2(d.X); })
-  .attr("width", x2.rangeBand())
-  .attr("height", function(d) { return height2 - y2(d.Y); })
-  .attr("y", function(d) { return y2(d.Y); })
+      .attr("x", function(d) { return x2(d.X); })
+      .attr("width", x2.rangeBand())
+      .attr("height", function(d) { return height2 - y2(d.Y); })
+      .attr("y", function(d) { return y2(d.Y); })
+      .attr("fill", function(d){ 
+        return color[colorsUsed[selectedCourses.indexOf(courseColor)]]; })
 
   grades.exit().remove();
 };
 
-
 //draws semester breakdown bar graph
-function  drawBySemester(){
-   semesterData = courseinfoEachSemester.filter(function(row) {
-          return ['course','year'].reduce(function(pass, column) {
-              return pass && (!currentCourse[column] || row[column] === currentCourse[column] || currentCourse[column].indexOf(row[column]) >= 0 );
-          }, true);
-      })
-   var missingSemester = ["Spring", "Summer","Fall"];
-   semesterData.forEach(function(d){
-      var index = missingSemester.indexOf(d.semester)
+function drawBySemester(){
+
+  semesterData = courseinfoEachSemester.filter(function(row) {
+      return ['course','year'].reduce(function(pass, column) {
+          return pass && (!currentCourse[column] || row[column] === currentCourse[column] || currentCourse[column].indexOf(row[column]) >= 0 );
+      }, true);
+  })
+  var missingSemester = ["Spring", "Summer","Fall"];
+  semesterData.forEach(function(d){
+  var index = missingSemester.indexOf(d.semester)
       if (index > -1) {
         missingSemester.splice(index, 1);
       }
-   })
+  })
 
-   missingSemester.forEach(function(d){
-      semesterData.push({"course":currentCourse.course,"GPA":"0",semester:d})
-   })
+  missingSemester.forEach(function(d){
+  semesterData.push({"course":currentCourse.course,"GPA":"0",semester:d})
+  })
   //append bars to graph
   var semesters = svg3.selectAll(".bar")
       .data(semesterData,function(d){return d.semester});
@@ -413,7 +516,6 @@ function refreshDetail(semester){
   });
 };
 
-
 //updates bar graphs when bubbles are clicked on line graph
 function showDetails(course,year){
       courseColor = course;
@@ -437,19 +539,109 @@ function showDetails(course,year){
           } else {
             currentCourse.semester = "Fall";
           } 
-
-        // svg2.remove('g');
-        // svg2 = d3.select("#byGrade").append("g")
-        // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         drawByGrade();
-        // svg3.remove('g');
-        // svg3 = d3.select("#bySemester").append("g")
-        // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         drawBySemester();
         updateModel(currentCourse);
-
       }
 }
+
+
+
+
+//Read and draw data
+d3.csv("output7.csv", function(error,data){
+    courseData = data;
+    var couserSet =d3.set();
+    data.forEach(function(d) {
+        d.Year = parseInt(d.Year);
+        d.GPA = +d.GPA;
+        couserSet.add(d.Course)
+    });
+    courseSet = couserSet.values();
+    //domain & range for line graph
+    xx.domain(d3.extent(courseData, function(d) { return d.Year; }));
+    yy.domain([2.0,4.0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(xx).ticks(5).tickFormat(d3.format("d"))
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(yy)
+        .orient("left");
+
+    //append x axis to graph
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+    //append y axis to graph
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -40)
+      .attr("x", -110)
+      .style("text-anchor", "end")
+      .text("Average GPA");
+
+    //title of line graph
+    svg.append("g")
+      .append("text")
+      .attr("x", 60)
+      .attr("class", "h4")
+      .attr("text-align", "center")
+      .text("Average GPA Over Time For Selected Courses");
+
+    //horizontal grid lines
+    svg.selectAll("line.horizontalGrid").data(yy.ticks(8)).enter()
+    .append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "x1" : 0,
+            "x2" : width,
+            "y1" : function(d){ return yy(d);},
+            "y2" : function(d){ return yy(d);},
+
+        });
+
+    //vertical grid lines
+    svg.selectAll("line.VerticalGrid").data(xx.ticks(5)).enter()
+    .append("line")
+        .attr(
+        {
+            "class":"horizontalGrid",
+            "y1" : 0,
+            "y2" : height,
+            "x1" : function(d){return xx(d);},
+            "x2" : function(d){ return xx(d);},
+
+        });
+
+    courseGPAArrays = selectedCourses.map(function(course) {
+      return { 
+        name: course,
+        values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
+              return {GPA: d.GPA, Year: +d.Year};
+          }),
+        highlight:true
+          };
+    });
+    console.log("here")
+    drawGPALineChart()
+});
+
+
+d3.csv("output6.csv", function(error, csv) {
+  courseinfoEachSemester = csv;
+  drawByGrade();
+  drawBySemester();
+});
+
+
 
 // Angular
 angular.module('ngAnimate', [])
@@ -508,14 +700,16 @@ angular.module('ngAnimate', [])
                 d.highlight = false;
               }
           })
-          $scope.updateView(courseGPAArrays,$scope.selectedCourses)
+          console.log("h here")
+          drawGPALineChart();
         }
 
         $scope.dehighlight = function(){
           courseGPAArrays.forEach(function(d){
             d.highlight = true;
           })
-          $scope.updateView(courseGPAArrays,$scope.selectedCourses)
+          console.log("de here")
+          drawGPALineChart();
         }
         $scope.chart1Data = currentCourse;
 
@@ -531,29 +725,10 @@ angular.module('ngAnimate', [])
 
         
         //update grapgh for class add/delete
-        $scope.updateView = function(courseGPAArrays,selectedCourses){
-          var allCourses = svg.selectAll(".course")
-            .data(courseGPAArrays,function(d){return d.name})
-
-          //This is update section to change the style of all course paths
-          allCourses.style("opacity",function(d) {
-              if (!d.highlight) {
-               return 0.3
-              } else {
-                return 1
-              }
-            })
-          allCourses.selectAll("path").style("stroke-width",function(d){
-              if (!d.highlight) {
-               return 1
-              } else {
-                return 2
-              }
-          })
+        $scope.updateView = function(courseGPAArrays){
+          console.log("updateView")
+          drawGPALineChart();
           
-           
-
-
         }
 
         //Add a course to selectedCourses and display them
@@ -566,87 +741,27 @@ angular.module('ngAnimate', [])
             $("#searchBox").val("");
             return;
           }
-          
-              if ((addCount - deleteCount) > 7) {
-                window.alert("The maximum number of classes is 8");
-                return;
-              }
-              addCount += 1;
-              $("#searchBox").val("");
-              selectedCourses.push(course);
-              $scope.selectedCourses = selectedCourses;
-              courseGPAArrays = selectedCourses.map(function(course) {
-              return {
-                name: course,
-                values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
-                      return {GPA: d.GPA, Year: +d.Year, };
-                  }),
-                highlight:true
-                  };
-              });
-              
-            var allCourses = svg.selectAll(".course")
-            .data(courseGPAArrays,function(d){return d.name})
-
-            //This is appending new paths and stlying them for new coursing
-            var newCourse = allCourses.enter().append("g");
-
-            newCourse.attr("class", "course").append("path")
-              .attr("class", "line")
-              .attr("d", function(d) { return lines(d.values); })
-              .style("stroke", function(d) { 
-              colorsUsed[colorsUsed.length] = colorsNotUsed[0]
-                colorsNotUsed.splice(0,1);
-                d.Color = color[colorsUsed[colorsUsed.length-1]];
-                  return color[colorsUsed[colorsUsed.length-1]];
-               })
-              .style("stroke-width",function(d){
-                return 2
-              })
-
-            newCourse.append("text")
-                .attr("transform", function(d) { 
-                  return "translate(" + width + "," + yy(d.values[d.values.length - 1].GPA) + ")"; })
-                .attr("x", 3)
-                .attr("dy", ".35em")
-                .text(function(d) { return d.name; });;
-            
-            //line graph tooltip on added classes
-            var tip = d3.tip()
-            .attr('class', 'd3-tip')
-            .offset([-10, 0])
-            .html(function(d) {
-              return "<div class='tip'><strong>Course:</strong> <span style='color:#FAEBD7'>" + d.Course + "</span></div>"+
-              "<div class='tip'><strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span></div>"+
-              "<div class='tip'> <strong>Year:</strong> <span style='color:#FAEBD7'>" + +d.Year + "</span></div>"
-              "";})
-
-              //bubbles around data points on line graph
-              var circlesElement = newCourse.selectAll(".circles")
-              .data(function(d, i) { 
-              var vs =  d.values.map(function(dd){
-                return {
-                  "Year": dd.Year,
-                  "GPA": dd.GPA,
-                  "Course": d.name,
-                  "Color": d.Color
-                }
-              })
-              return vs;
-              })
-              .enter()
-              .append("circle")
-              .attr("cx",function(d){ return xx(d.Year)})
-              .attr("cy", function(d){ return yy(d.GPA)})
-              .attr("r",10)
-              .attr("class","circles")
-              .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
-              .on('mouseout', tip.hide)
-              .on('mouseover', tip.show)
-              .style("fill",function(d){return d.Color})
-              .call(tip)
-              $scope.calculateAverageGPAForAllCourse();
+          if ((addCount - deleteCount) > 7) {
+            window.alert("The maximum number of classes is 8");
+            return;
           }
+          addCount += 1;
+          $("#searchBox").val("");
+          selectedCourses.push(course);
+          $scope.selectedCourses = selectedCourses;
+          courseGPAArrays = selectedCourses.map(function(course) {
+            return { 
+              name: course,
+              values: courseData.filter(function(d) { return d.Course == course ; }).map(function(d) {
+                    return {GPA: d.GPA, Year: +d.Year};
+                }),
+              highlight:true
+                };
+          });
+          console.log("addcourse")
+          drawGPALineChart()
+          $scope.calculateAverageGPAForAllCourse();
+        }
        
        //deletes course from line graph
        $scope.deleteCourse = function(course){
@@ -679,159 +794,6 @@ angular.module('ngAnimate', [])
 
 
 
-//Read and draw data
-d3.csv("output7.csv", function(error,data){
-    courseData = data;
-    var couserSet =d3.set();
-    data.forEach(function(d) {
-        d.Year = parseInt(d.Year);
-        d.GPA = +d.GPA;
-        couserSet.add(d.Course)
-    });
-    courseSet = couserSet.values();
-
-    var N = 20; 
-    var indexRange = Array.apply(null, {length: N}).map(Number.call, Number)
-    
-    // color.domain(indexRange);
-
-    courseGPAArrays = selectedCourses.map(function(course) {
-    return { 
-      name: course,
-      values: data.filter(function(d) { return d.Course == course ; }).map(function(d) {
-            return {GPA: d.GPA, Year: +d.Year};
-        }),
-      highlight:true
-        };
-    });
-
-    //domain & range for line graph
-    xx.domain(d3.extent(data, function(d) { return d.Year; }));
-    yy.domain([2.0,4.0]);
-
-    //append x axis to graph
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
-
-    //append y axis to graph
-    svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -40)
-      .attr("x", -110)
-      .style("text-anchor", "end")
-      .text("Average GPA");
-
-    //title of line graph
-    svg.append("g")
-      .append("text")
-      .attr("x", 60)
-      .attr("class", "h4")
-      .attr("text-align", "center")
-      .text("Average GPA Over Time For Selected Courses");
-
-
-
-    var courseElement = svg.selectAll(".course")
-      .data(courseGPAArrays, function(d){return d.name});
-
-    courseElement.enter().append("g")
-      .attr("class", "course");
-    
-    //append lines to graph
-    courseElement.append("path")
-      .attr("class", "line")
-      .attr("d", function(d) { return lines(d.values); })
-      .style("stroke", function(d) { 
-        d.Color = color[selectedCourses.indexOf(d.name)%20]
-            return color[selectedCourses.indexOf(d.name)%20]; })
-      .style("stroke-width",2);
-
-    //tooltip for line graph
-    var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return "<div class='tip'><strong>Course:</strong> <span style='color:#FAEBD7'>" + d.Course + "</span></div>"+
-      "<div class='tip'><strong>GPA:</strong> <span style='color:#FAEBD7'>" + +d.GPA + "</span></div>"+
-      "<div class='tip'> <strong>Year:</strong> <span style='color:#FAEBD7'>" + +d.Year + "</span></div>"
-      ""; })
-
-    //bubbles around data points on line graph
-    var circlesElement = courseElement.selectAll(".circles")
-        .data(function(d, i) { 
-          var vs =  d.values.map(function(dd){
-            return {
-              "Year": dd.Year,
-              "GPA": dd.GPA,
-              "Course": d.name,
-              "Color": d.Color
-            }
-          })
-          return vs;
-          })
-        .enter()
-        .append("circle")
-        .attr("cx",function(d){ return xx(d.Year)})
-        .attr("cy", function(d){ return yy(d.GPA)})
-        .attr("r",10)
-        .attr("class","circles")
-        .style("fill",function(d){return d.Color})
-        .on("click",function(d){ showDetails(d.Course,d.Year.toString()) })
-        .on('mouseout', tip.hide)
-        .on('mouseover', tip.show)
-        .call(tip)
-    
-
-    courseElement.append("text")
-          .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-          .attr("transform", function(d) { return "translate(" + xx(d.value.Year) + "," + yy(d.value.GPA) + ")"; })
-          .attr("x", 3)
-          .attr("dy", ".35em")
-          .text(function(d) { return d.name; });
-    
-    //horizontal grid lines
-    svg.selectAll("line.horizontalGrid").data(yy.ticks(8)).enter()
-    .append("line")
-        .attr(
-        {
-            "class":"horizontalGrid",
-            "x1" : 0,
-            "x2" : width,
-            "y1" : function(d){ return yy(d);},
-            "y2" : function(d){ return yy(d);},
-
-        });
-
-    //vertical grid lines
-    svg.selectAll("line.VerticalGrid").data(xx.ticks(5)).enter()
-    .append("line")
-        .attr(
-        {
-            "class":"horizontalGrid",
-            "y1" : 0,
-            "y2" : height,
-            "x1" : function(d){return xx(d);},
-            "x2" : function(d){ return xx(d);},
-
-        });
-
-});
-
-//filters for selecting individual classes from csv
-//currentCourse is grade breakdown
-//filters2 is semester breakdown
-  
-
-d3.csv("output6.csv", function(error, csv) {
-  courseinfoEachSemester = csv;
-  drawByGrade();
-  drawBySemester();
-});
 
 </script>
 

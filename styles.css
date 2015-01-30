@@ -1,19 +1,20 @@
 body {
   font: 10px;
   padding: 20px;
-  background-color: #99CCCC !important;
+  
 }
 
 .container-fluid {
   font-family: 'Cabin', Helvetica, Arial, sans-serif;
   margin-top: -50px;
   padding-top: 20px;
+  background-color: #fef9ed;
 
 }
 
 .sga-credit {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 .row {
@@ -26,7 +27,7 @@ body {
 }
 
 .selected-courses {
-  margin-left: 60px;
+  margin-left: 0px;
   min-height: 106px;
 }
 
@@ -46,8 +47,8 @@ body {
   margin-top: 45px;
   background-color: #fef9ed;
   position: relative;
-  height: 525px;
-  overflow: hidden;
+  height: 500px;
+  /*overflow: hidden;*/
 }
 
 h1 {
@@ -60,7 +61,7 @@ h1 {
 }
 
 .title {
-  background-color: #99CCCC;
+  background-color: #fef9ed;
   margin-left: 0px;
   margin-top: -20px;
   padding: 5px;
@@ -140,7 +141,7 @@ h1 {
 }
 
 #gpa {
-  margin-left: 60px;
+  margin-left: 0px;
   margin-top: 10px;
   overflow: visible;
 }
@@ -163,8 +164,8 @@ border: 1px solid #ddd;
 }
 .list-group {
 max-width: 400px;
-height: auto;
-max-height: 258px;
+height:200px;
+max-height: 358px;
 overflow-x: hidden;
 }
 
